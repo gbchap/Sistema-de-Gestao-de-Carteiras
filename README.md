@@ -7,3 +7,6 @@ do tempo.
 Neste trabalho, é desenvolvido um sistema de
 gerenciamento de carteiras de investimentos, utilizando os
 conceitos de Orientação a Objetos.
+
+
+Relatório: https://docs.google.com/document/d/1VTQG4ZRngEqMf_d0R4OwaJPYKlfpoYZekWHo8VG6OLM/edit?usp=sharing
