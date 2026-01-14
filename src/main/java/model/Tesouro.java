@@ -1,0 +1,16 @@
+package model;
+
+public class Tesouro extends Ativo {
+    private String tipoRendimento; // Selic, Prefixado ou IPCA+
+    private String dataVencimento;
+
+    public Tesouro(String nome, String ticker, double precoAtual, boolean qualificado, 
+                   String tipoRendimento, String dataVencimento) {
+        super(nome, ticker, precoAtual, qualificado);
+        this.tipoRendimento = tipoRendimento;
+        this.dataVencimento = dataVencimento;
+    }
+
+    @Override
+    public String getTipoRenda() { return "Renda Fixa"; }
+}

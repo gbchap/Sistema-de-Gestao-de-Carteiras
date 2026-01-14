@@ -1,4 +1,4 @@
-package main.java.Exceptions;
+package Exceptions;
 
 public class OpcaoInvalidaException extends Exception{
     public OpcaoInvalidaException(int opcao){
