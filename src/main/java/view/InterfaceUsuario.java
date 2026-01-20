@@ -177,6 +177,8 @@ public class InterfaceUsuario {
             case -11: mensagem = "O texto é muito curto (mínimo 3 caracteres)."; break;
             case -20: mensagem = "O valor deve ser maior que zero."; break;
             case -30: mensagem = "Opção inválida! Escolha uma opção do menu."; break;
+            case -40: mensagem = "Data inválida. Use o formato dd/mm/aaaa."; break;
+            case -41: mensagem = "A data de nascimento não pode ser no futuro."; break;
             
             default: mensagem = "Erro de entrada de dados."; break;
         }

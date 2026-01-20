@@ -1,8 +1,21 @@
 package resources;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 public class Validador {
+    public static int validarData(String dataStr) {
+        if (dataStr == null || !dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) return -40; // Formato inválido
 
-    /**
+        try {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate data = LocalDate.parse(dataStr, dtf);
+            if (data.isAfter(LocalDate.now())) return -41; // Data no futuro
+            return 0;
+        } catch (DateTimeParseException e) {
+            return -40;
+        }
+    }
+        /**
      * tira todos os caracteres que nao sao numeros do documento
      */
     public static String limparDocumento(String doc) {
