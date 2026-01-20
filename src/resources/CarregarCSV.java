@@ -10,7 +10,7 @@ import model.*;
 
 public class CarregarCSV {
 
-    // Ajusta este caminho conforme a estrutura do teu VS Code
+    // Ajusta este caminho conforme a estrutura do nosso VS Code
     private static final String BASE_PATH = "resources/Arquivoscsv/";
     /**
      * Método mestre que centraliza a carga de todos os ficheiros.

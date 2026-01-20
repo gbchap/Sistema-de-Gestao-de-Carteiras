@@ -1,10 +1,13 @@
 package view;
 
+import java.util.List;
 import java.util.Scanner;
 
-/**
- * Fiz essa classe separada para deixar todas as mensagens em um só lugar e deixar a gestão mais "limpa"
- */
+// IMPORTANTE: Removido o "main.java" dos nomes dos pacotes
+import model.Institucional;
+import model.Investidor;
+import model.PessoaFisica;
+
 public class InterfaceUsuario {
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -39,8 +42,19 @@ public class InterfaceUsuario {
         System.out.print("\nSelecione uma opção: ");
     }
 
+    public static void exibirMenuInvestidores() {
+        System.out.println("\n--- MENU INVESTIDORES ---");
+        System.out.println("1 - Cadastrar investidor");
+        System.out.println("2 - Cadastrar investidor em lote");
+        System.out.println("3 - Exibir todos investidores");
+        System.out.println("4 - Excluir investidores (lista de CPFs/CNPJs)");
+        System.out.println("5 - Selecionar Investidor por CPF ou CNPJ");
+        System.out.println("0 - Voltar ao menu anterior");
+        System.out.print("\nSelecione uma opção: ");
+    }
+
     public static void exibirMensagemCarga(int quantidade) {
-        System.out.println("\n[INFO]: " + quantidade + " ativos carregados com sucesso!");
+        System.out.println("\n[INFO]: " + quantidade + " registros processados com sucesso!");
     }
 
     public static void exibirEncerrando() {
@@ -63,5 +77,54 @@ public class InterfaceUsuario {
         }
     }
 
-    
+    // Métodos de Leitura Limpos
+    public static String lerNome() {
+        System.out.print("Digite o nome: ");
+        return scanner.nextLine();
+    }
+
+    public static String lerDocumento() {
+        System.out.print("Digite o CPF/CNPJ: ");
+        return scanner.nextLine();
+    }
+
+    public static double lerPatrimonio() {
+        System.out.print("Digite o patrimônio inicial: ");
+        try {
+            return Double.parseDouble(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    public static String lerPerfil() {
+        System.out.print("Perfil (Conservador/Moderado/Arrojado): ");
+        return scanner.nextLine();
+    }
+
+    public static String lerRazaoSocial() {
+        System.out.print("Digite a Razão Social: ");
+        return scanner.nextLine();
+    }
+
+    // MÉTODO CORRIGIDO: Recebe a lista e formata os dados
+    public static void exibirListaInvestidores(List<Investidor> investidores) {
+        System.out.println("\n--- LISTA DE INVESTIDORES ---");
+        if (investidores.isEmpty()) {
+            System.out.println("Nenhum investidor cadastrado.");
+        } else {
+            for (Investidor i : investidores) {
+                String tipoInfo = "";
+                if (i instanceof PessoaFisica) {
+                    tipoInfo = " | Perfil: " + ((PessoaFisica) i).getPerfil();
+                } else if (i instanceof Institucional) {
+                    tipoInfo = " | Razão: " + ((Institucional) i).getRazaoSocial();
+                }
+
+                System.out.printf("Nome: %-20s | Doc: %-14s | Patrimônio: R$ %10.2f%s\n", 
+                        i.getNome(), i.getDocumento(), i.getPatrimonioTotal(), tipoInfo);
+            }
+        }
+        System.out.println("--------------------------------------------");
+    }
 }
