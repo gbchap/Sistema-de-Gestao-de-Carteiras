@@ -7,6 +7,7 @@ import java.util.Scanner;
 import model.Institucional;
 import model.Investidor;
 import model.PessoaFisica;
+import resources.Validador;
 
 public class InterfaceUsuario {
     private static final Scanner scanner = new Scanner(System.in);
@@ -89,22 +90,49 @@ public class InterfaceUsuario {
     }
 
     public static double lerPatrimonio() {
-        System.out.print("Digite o patrimônio inicial: ");
-        try {
-            return Double.parseDouble(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            return 0.0;
+        while (true) {
+            System.out.print("Digite o patrimônio inicial: ");
+            String entrada = scanner.nextLine();
+            try {
+                double valor = Double.parseDouble(entrada.replace(",", "."));
+                if (valor > 0) return valor;
+                
+                exibirMensagemErroValidador(-20); // Código que criamos: "Valor deve ser > 0"
+            } catch (NumberFormatException e) {
+                System.err.println("[ERRO]: Digite um valor numérico (ex: 1500.50)");
+            }
         }
     }
 
     public static String lerPerfil() {
-        System.out.print("Perfil (Conservador/Moderado/Arrojado): ");
-        return scanner.nextLine();
+        while (true) {
+            System.out.println("\n--- PERFIL DO INVESTIDOR ---");
+            System.out.println("1 - Conservador");
+            System.out.println("2 - Moderado");
+            System.out.println("3 - Arrojado");
+            System.out.print("Selecione (1-3): ");
+            
+            String op = scanner.nextLine();
+            switch (op) {
+                case "1": return "Conservador";
+                case "2": return "Moderado";
+                case "3": return "Arrojado";
+                default:
+                    exibirMensagemErroValidador(-30); // Código: "Opção inválida"
+            }
+        }
     }
 
     public static String lerRazaoSocial() {
-        System.out.print("Digite a Razão Social: ");
-        return scanner.nextLine();
+        while (true) {
+        System.out.print("Digite a Razão Social da Instituição: ");
+        String razao = scanner.nextLine();
+        int status = Validador.validarTexto(razao); // Reusando o erro -10 e -11
+        
+        if (status == 0) return razao;
+        
+        exibirMensagemErroValidador(status);
+    }
     }
 
     // MÉTODO CORRIGIDO: Recebe a lista e formata os dados
@@ -131,37 +159,34 @@ public class InterfaceUsuario {
     private static final String REGRA_DOC = " CPF precisa de 11 dígitos e CNPJ precisa de 14.";
 
     public static void exibirMensagemErroValidador(int codigoErro) {
-        String inicioMensagem;
-        
+        String mensagem = "";
+        boolean incluirRegraDoc = false;
+
         switch (codigoErro) {
-            case -1:
-                System.err.println("\n[ERRO]: O documento não pode estar vazio.");
-                return;
-            case -2:
-                inicioMensagem = "Documento muito curto.";
-                break;
-            case -3:
-                inicioMensagem = "Tamanho de documento inválido.";
-                break;
-            case -4:
-                inicioMensagem = "Documento muito longo.";
-                break;
-            case -5:
-                inicioMensagem = "O documento contém caracteres inválidos (letras ou símbolos não permitidos).";
-                break;
-                case -6:
-            inicioMensagem = "Este documento já está cadastrado no sistema.";
-            System.err.println("\n[ERRO]: " + inicioMensagem);
-            return; // Encerra aqui pois não precisa da regra de dígitos
-            case -7:
-                inicioMensagem = "Documento inválido (sequência de números repetidos).";
-                break;
-            default:
-                inicioMensagem = "Erro desconhecido.";
-                break;
+            // --- ERROS DE DOCUMENTO (Precisam da REGRA_DOC no final) ---
+            case -1: mensagem = "O documento não pode estar vazio."; break;
+            case -2: mensagem = "Documento muito curto."; incluirRegraDoc = true; break;
+            case -3: mensagem = "Tamanho de documento inválido."; incluirRegraDoc = true; break;
+            case -4: mensagem = "Documento muito longo."; incluirRegraDoc = true; break;
+            case -5: mensagem = "O documento contém caracteres inválidos."; incluirRegraDoc = true; break;
+            case -6: mensagem = "Este documento já está cadastrado no sistema."; break;
+            case -7: mensagem = "Documento inválido (números repetidos)."; incluirRegraDoc = true; break;
+
+            // --- ERROS GERAIS (NÃO precisam da REGRA_DOC) ---
+            case -10: mensagem = "O campo não pode estar vazio."; break;
+            case -11: mensagem = "O texto é muito curto (mínimo 3 caracteres)."; break;
+            case -20: mensagem = "O valor deve ser maior que zero."; break;
+            case -30: mensagem = "Opção inválida! Escolha uma opção do menu."; break;
+            
+            default: mensagem = "Erro de entrada de dados."; break;
         }
-        
-        System.err.println("\n[ERRO]: " + inicioMensagem + REGRA_DOC);
+
+        // Montagem 1da msg
+        if (incluirRegraDoc) {
+            System.err.println("\n[ERRO]: " + mensagem + REGRA_DOC);
+        } else {
+            System.err.println("\n[ERRO]: " + mensagem);
+        }
     }
 
 }

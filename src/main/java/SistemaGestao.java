@@ -83,19 +83,31 @@ public class SistemaGestao {
             }
         }
     }
+    
     private static void cadastrarInvestidor() {
-        String nome = InterfaceUsuario.lerNome();
-        String docRaw = "";
-        int statusDoc = 0;
+        String nome;
+        while (true) {
+            nome = InterfaceUsuario.lerNome();
+            int statusNome = Validador.validarTexto(nome);
+            if (statusNome == 0) break;
+            InterfaceUsuario.exibirMensagemErroValidador(statusNome); // Exibe erro -11
+        }
         //validação da entrada do documento:
+        String docRaw; // Declarada aqui para ser usada no loop
+        int statusDoc;
         while (true) {
             docRaw = InterfaceUsuario.lerDocumento();
             statusDoc = Validador.validarDocumento(docRaw);
 
             if (statusDoc == 0) {
-                break; // Documento válido, sai do loop
+            // Se o formato estiver ok, agora conferimos a duplicidade (To-Do -6)
+            String docLimpoTemp = Validador.limparDocumento(docRaw);
+            if (buscarInvestidor(docLimpoTemp) != null) {
+                InterfaceUsuario.exibirMensagemErroValidador(-6);
+                continue;
+            }
+            break; 
             } else {
-                // la na view resolve qual mensagem mostrar com base no código
                 InterfaceUsuario.exibirMensagemErroValidador(statusDoc);
             }
         }
@@ -113,6 +125,15 @@ public class SistemaGestao {
         
         InterfaceUsuario.exibirMensagemCarga(1); 
     }
+
+    private static Investidor buscarInvestidor(String doc) {
+    for (Investidor inv : listaInvestidores) {
+        if (inv.getDocumento().equals(doc)) {
+            return inv; // Encontrou o investidor
+        }
+    }
+    return null; // Percorreu a lista toda e não achou ninguém
+}
 
     private static void listarInvestidores() {
     // Se a lista estiver vazia, avisa a view sem usar Strings aqui

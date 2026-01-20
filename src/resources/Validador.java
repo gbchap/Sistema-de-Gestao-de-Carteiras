@@ -40,4 +40,34 @@ public class Validador {
     public static boolean isCPF(String doc) {
         return limparDocumento(doc).length() == 11;
     }
+
+    // --- VALIDAÇÃO DE NOMES / TEXTOS ---
+    /**
+     * Erros: 0 (Ok), -10 (Vazio ou apenas espaços), -11 (Muito curto)
+     */
+    public static int validarTexto(String texto) {
+        if (texto == null || texto.trim().isEmpty()) return -10;
+        if (texto.trim().length() < 3) return -11; // Nomes com menos de 3 letras
+        return 0;
+    }
+
+    // --- VALIDAÇÃO DE VALORES MONETÁRIOS (Patrimônio, Preço, etc) ---
+    /**
+     * Erros: 0 (Ok), -20 (Valor negativo ou zero)
+     */
+    public static int validarValorPositivo(double valor) {
+        if (valor <= 0) return -20;
+        return 0;
+    }
+
+    // --- VALIDAÇÃO DE OPÇÕES DE MENU ---
+    /**
+     * Erros: 0 (Ok), -30 (Opção fora do intervalo permitido)
+     */
+    public static int validarOpcaoMenu(int opcao, int min, int max) {
+        if (opcao < min || opcao > max) return -30;
+        return 0;
+    }
+
+    
 }
