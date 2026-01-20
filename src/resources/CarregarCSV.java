@@ -53,11 +53,27 @@ public class CarregarCSV {
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha = br.readLine();
             while ((linha = br.readLine()) != null) {
+               // uma validação doida aqui pra ler direito pq nao parava de cair no erro de multiple points
                 String[] d = linha.split(";");
-                // Ticker;Nome;Setor;Preço;Dividendo;Taxa
-                if (d[3].equals("-")) continue; 
-                lista.add(new FII(d[1], d[0], Double.parseDouble(d[3]), false, d[2], 
-                          Double.parseDouble(d[4]), Double.parseDouble(d[5])));
+
+                if (d.length < 6 || d[3].equals("-")) continue; 
+
+                try {
+                    // TRATAMENTO DEFINITIVO:
+                    // 1. d[3].replace(".", "") -> Remove o ponto de milhar (ex: 1.051.35 vira 1051.35)
+                    // 2. .replace(",", ".") -> Caso exista vírgula, troca por ponto para o padrão Java
+                    String precoTratado = d[3].replace(".", "").replace(",", ".");
+                    double preco = Double.parseDouble(precoTratado);
+
+                    // Repetir o tratamento para dividendos e taxas por segurança
+                    double dividendo = Double.parseDouble(d[4].replace(".", "").replace(",", "."));
+                    double taxa = Double.parseDouble(d[5].replace(".", "").replace(",", "."));
+
+                    lista.add(new FII(d[1], d[0], preco, false, d[2], dividendo, taxa));
+                } catch (NumberFormatException e) {
+                    // aqui o sistema avida qual linha deu problema
+                    System.err.println("Falha ao converter valores na linha: " + linha);
+                } 
             }
         } catch (Exception e) {
             System.err.println("Erro ao ler fii.csv: " + e.getMessage());
@@ -72,7 +88,18 @@ public class CarregarCSV {
             while ((linha = br.readLine()) != null) {
                 String[] d = linha.split(";");
                 // Ticker;Nome;Preço(USD);Consenso;Max
-                lista.add(new Criptoativo(d[1], d[0], Double.parseDouble(d[2]), false, d[3], d[4], 5.39));
+                
+                // TRATAMENTO DO ERRO "Index out of bounds":
+                // Verificamos se a coluna existe antes de tentar ler
+                String ticker = d[0];
+                String nome = d[1];
+                double preco = Double.parseDouble(d[2]);
+                
+                // Se o tamanho do array d for maior que 3, a coluna existe; senão, usamos um padrão
+                String consenso = (d.length > 3) ? d[3] : "N/A";
+                String qtdMax = (d.length > 4) ? d[4] : "Ilimitado";
+
+                lista.add(new Criptoativo(nome, ticker, preco, false, consenso, qtdMax, 5.39));
             }
         } catch (Exception e) {
             System.err.println("Erro ao ler criptoativo.csv: " + e.getMessage());

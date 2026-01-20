@@ -1,0 +1,59 @@
+================================================================================
+                                   TO-DO LIST:
+================================================================================
+
+ => MÓDULO DE BUSCA E INTEGRIDADE (ERRO -6) : 
+
+    [ ] ETAPA 1: O MOTOR DE BUSCA (SistemaGestao.java)
+    --------------------------------------------------------------------------------
+    Dica: Este método é o coração do sistema. Ele evita duplicidade, permite
+    selecionar e permite excluir.
+
+    CÓDIGO:
+    private static Investidor buscarInvestidor(String doc) {
+        for (Investidor inv : listaInvestidores) {
+            if (inv.getDocumento().equals(doc)) {
+                return inv; // 🎯 Achou o investidor
+            }
+        }
+        return null; // ❌ Não encontrado
+    }
+
+    --------------------------------------------------------------------------------
+
+    [ ] ETAPA 2: PROTEÇÃO CONTRA DUPLICIDADE (cadastrarInvestidor)
+    --------------------------------------------------------------------------------
+    Onde: Dentro do loop 'while(true)' de cadastro, logo após limpar o documento.
+    Lógica: Se buscarInvestidor(docLimpo) retornar ALGO, o cadastro para por ali.
+
+    TRECHO CHAVE:
+        docLimpo = Validador.limparDocumento(docRaw);
+
+        if (buscarInvestidor(docLimpo) != null) {
+            InterfaceUsuario.exibirMensagemErroValidador(-6); // "Já cadastrado"
+            continue; // Volta para pedir o documento de novo
+        }
+
+    --------------------------------------------------------------------------------
+
+    [ ] ETAPA 3: SELEÇÃO DE INVESTIDOR (Opção 5)
+    --------------------------------------------------------------------------------
+    Dica: Use a variável global 'investidorLogado' para manter a sessão ativa.
+
+    LÓGICA:
+    1. Pede o documento via View.
+    2. Limpa o documento via Validador.
+    3. Chama buscarInvestidor(docLimpo).
+    4. Se (encontrado != null) -> investidorLogado = encontrado;
+    5. Se (null) -> Exibe erro "Não encontrado".
+
+    --------------------------------------------------------------------------------
+
+    [ ] ETAPA 4: TESTES DE VALIDAÇÃO (QA)
+    --------------------------------------------------------------------------------
+    [ ] Teste 1: Tentar cadastrar o MESMO CPF duas vezes (Deve dar Erro -6).
+    [ ] Teste 2: Selecionar um investidor que NÃO existe (Deve dar "Não encontrado").
+    [ ] Teste 3: Selecionar um investidor que EXISTE (Deve mostrar mensagem de sucesso).
+
+    ================================================================================
+ <=

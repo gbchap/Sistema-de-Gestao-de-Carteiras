@@ -8,7 +8,7 @@ public abstract class Ativo {
     private String nome;
     private String ticker;
     private double precoAtual;
-    private boolean qualificado; // Indica se é restrito a investidores qualificados [cite: 86]
+    private boolean qualificado; // Indica se é restrito a investidores qualificados
 
     public Ativo(String nome, String ticker, double precoAtual, boolean qualificado) {
         if (ticker == null || ticker.trim().isEmpty()) {
@@ -24,7 +24,7 @@ public abstract class Ativo {
         this.qualificado = qualificado;
     }
 
-    // Getters e Setters 
+    // getters e setters 
     
     public String getNome() {
         return nome;
@@ -43,7 +43,7 @@ public abstract class Ativo {
     }
 
     /**
-     * Altera o preço do ativo, garantindo que não seja negativo[cite: 38].
+     * Altera o preço do ativo, garantindo que não seja negativo
      */
     public void setPrecoAtual(double precoAtual) {
         if (precoAtual < 0) {

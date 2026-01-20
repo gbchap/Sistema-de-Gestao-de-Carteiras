@@ -4,6 +4,7 @@ import java.util.List;
 
 import Exceptions.OpcaoInvalidaException;
 import resources.CarregarCSV;
+import resources.Validador;
 import view.InterfaceUsuario;
 import model.*;
 
@@ -84,20 +85,35 @@ public class SistemaGestao {
     }
     private static void cadastrarInvestidor() {
         String nome = InterfaceUsuario.lerNome();
-        String doc = InterfaceUsuario.lerDocumento();
+        String docRaw = "";
+        int statusDoc = 0;
+        //validação da entrada do documento:
+        while (true) {
+            docRaw = InterfaceUsuario.lerDocumento();
+            statusDoc = Validador.validarDocumento(docRaw);
+
+            if (statusDoc == 0) {
+                break; // Documento válido, sai do loop
+            } else {
+                // la na view resolve qual mensagem mostrar com base no código
+                InterfaceUsuario.exibirMensagemErroValidador(statusDoc);
+            }
+        }
+
+        String docLimpo = Validador.limparDocumento(docRaw);
         double patrimonio = InterfaceUsuario.lerPatrimonio();
         
-        // Logica de decisão baseada no tamanho do documento ( é a regra de negócio)
-        if (doc.length() <= 14) { 
+        if (Validador.isCPF(docLimpo)) { 
             String perfil = InterfaceUsuario.lerPerfil();
-            listaInvestidores.add(new PessoaFisica(nome, doc, patrimonio, perfil));
-        } else {
+            listaInvestidores.add(new PessoaFisica(nome, docLimpo, patrimonio, perfil));
+        } else { 
             String razao = InterfaceUsuario.lerRazaoSocial();
-            listaInvestidores.add(new Institucional(nome, doc, patrimonio, razao));
+            listaInvestidores.add(new Institucional(nome, docLimpo, patrimonio, razao));
         }
         
         InterfaceUsuario.exibirMensagemCarga(1); 
     }
+
     private static void listarInvestidores() {
     // Se a lista estiver vazia, avisa a view sem usar Strings aqui
     if (listaInvestidores.isEmpty()) {

@@ -1,0 +1,51 @@
+A lógica de leitura da classe CarregarCSV é fundamental para o sistema, pois ela é responsável por transformar dados brutos de arquivos de texto em objetos Java que o programa consegue manipular.
+
+Aqui está o detalhamento de cada etapa do processo:
+
+1. Estrutura de Fluxo (Buffer)
+Para ler os arquivos, utilizamos o BufferedReader em conjunto com o FileReader.
+
+Por que? Ler um arquivo direto do disco é um processo lento. O BufferedReader cria um "reservatório" (buffer) na memória, lendo grandes blocos do arquivo de uma vez, o que torna o processo muito mais rápido.
+
+Try-with-resources: Note que usamos try (BufferedReader br = ...). Isso garante que o arquivo será fechado automaticamente ao final da leitura, mesmo se ocorrer um erro, evitando vazamento de memória.
+
+2. Processamento Linha a Linha
+O método br.readLine() lê uma linha inteira do CSV por vez.
+
+Cabeçalho: A primeira chamada de br.readLine() serve apenas para "pular" o cabeçalho (nomes das colunas), para que não tentemos transformar títulos em números.
+
+Loop While: O sistema continua lendo linha por linha até que o resultado seja null, indicando o fim do arquivo.
+
+3. Divisão de Dados (Split)
+Como o arquivo é um CSV (Valores Separados por Ponto e Vírgula), usamos linha.split(";").
+
+Isso quebra a String da linha em um array de Strings (que chamamos de d ou dados).
+
+Exemplo: "BTC;Bitcoin;90000" vira d[0] = "BTC", d[1] = "Bitcoin", d[2] = "90000".
+
+4. Tratamentos de Erros e Limpeza (A parte Crítica)
+O código evoluiu para lidar com as "sujeiras" comuns em dados reais:
+
+Erro de "Multiple Points" (FIIs):
+
+O Problema: O Java não entende números como 1.051.35 (ponto como separador de milhar).
+
+A Solução: Usamos .replace(".", ""). Isso remove o ponto de milhar, transformando o valor em 1051.35, que é um formato válido para o Double.parseDouble.
+
+Vírgulas: Também usamos .replace(",", ".") para garantir que, se houver uma vírgula decimal (padrão brasileiro), ela vire um ponto (padrão Java).
+
+Erro de "Index Out of Bounds" (Criptoativos):
+
+O Problema: Linhas incompletas no CSV (como uma cripto sem "quantidade máxima") fazem o array ter menos posições do que o esperado.
+
+A Solução: Verificamos o tamanho do array antes de acessar. Usamos o operador ternário: (d.length > 4) ? d[4] : "Ilimitado". Se a coluna 4 não existir, o sistema usa o texto "Ilimitado" em vez de travar o programa.
+
+Linhas Inválidas: * Usamos if (d.length < 6 || d[3].equals("-")) continue; para que o sistema ignore silenciosamente linhas sem preço ou com formato errado, passando para a próxima sem interromper a carga dos outros ativos.
+
+5. Instanciação e Polimorfismo
+Após limpar e converter os dados (Strings para double ou boolean), o método cria a instância específica (ex: new FII(...) ou new Acao(...)) e a adiciona a uma List<Ativo>.
+
+Embora cada método interno retorne uma lista específica (ex: List<Acao>), o método principal carregarTodosAtivos() as une todas em uma lista de Ativo. Isso é polimorfismo: o sistema trata tipos diferentes como se fossem o mesmo tipo base.
+
+6. Tratamento de Exceções
+Cada método de leitura está envolvido em um bloco try-catch. Isso é vital para que, se o arquivo acao.csv estiver corrompido ou faltando, o sistema apenas exiba um erro no console e continue tentando carregar os outros arquivos (fii.csv, stock.csv, etc.), em vez de fechar o programa inteiro.

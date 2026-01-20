@@ -127,4 +127,41 @@ public class InterfaceUsuario {
         }
         System.out.println("--------------------------------------------");
     }
+
+    private static final String REGRA_DOC = " CPF precisa de 11 dígitos e CNPJ precisa de 14.";
+
+    public static void exibirMensagemErroValidador(int codigoErro) {
+        String inicioMensagem;
+        
+        switch (codigoErro) {
+            case -1:
+                System.err.println("\n[ERRO]: O documento não pode estar vazio.");
+                return;
+            case -2:
+                inicioMensagem = "Documento muito curto.";
+                break;
+            case -3:
+                inicioMensagem = "Tamanho de documento inválido.";
+                break;
+            case -4:
+                inicioMensagem = "Documento muito longo.";
+                break;
+            case -5:
+                inicioMensagem = "O documento contém caracteres inválidos (letras ou símbolos não permitidos).";
+                break;
+                case -6:
+            inicioMensagem = "Este documento já está cadastrado no sistema.";
+            System.err.println("\n[ERRO]: " + inicioMensagem);
+            return; // Encerra aqui pois não precisa da regra de dígitos
+            case -7:
+                inicioMensagem = "Documento inválido (sequência de números repetidos).";
+                break;
+            default:
+                inicioMensagem = "Erro desconhecido.";
+                break;
+        }
+        
+        System.err.println("\n[ERRO]: " + inicioMensagem + REGRA_DOC);
+    }
+
 }
