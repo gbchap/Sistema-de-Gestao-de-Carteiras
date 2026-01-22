@@ -1,12 +1,14 @@
 
 import java.util.ArrayList;
 import java.util.List;
-
 import Exceptions.OpcaoInvalidaException;
 import resources.CarregarCSV;
 import resources.Validador;
 import view.InterfaceUsuario;
 import model.*;
+import model.Investidores.Institucional;
+import model.Investidores.Investidor;
+import model.Investidores.PessoaFisica;
 
 public class SistemaGestao {
     private static List<Ativo> bancoDeAtivos = new ArrayList<>();

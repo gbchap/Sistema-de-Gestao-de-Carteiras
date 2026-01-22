@@ -1,4 +1,4 @@
-package model;
+package model.Investidores;
 
 import java.time.LocalDate;
 

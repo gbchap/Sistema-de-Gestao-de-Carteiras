@@ -1,9 +1,11 @@
-package model;
+package model.Investidores;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Carteira;
 import model.ItemCarteira;
+import model.Movimentacao;
 
 public abstract class Investidor {
     private String nome;

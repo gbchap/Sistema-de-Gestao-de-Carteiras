@@ -3,10 +3,9 @@ package view;
 import java.util.List;
 import java.util.Scanner;
 
-// IMPORTANTE: Removido o "main.java" dos nomes dos pacotes
-import model.Institucional;
-import model.Investidor;
-import model.PessoaFisica;
+import model.Investidores.Institucional;
+import model.Investidores.Investidor;
+import model.Investidores.PessoaFisica;
 import resources.Validador;
 
 public class InterfaceUsuario {
@@ -45,11 +44,28 @@ public class InterfaceUsuario {
 
     public static void exibirMenuInvestidores() {
         System.out.println("\n--- MENU INVESTIDORES ---");
-        System.out.println("1 - Cadastrar investidor");
+        System.out.println("1 - Cadastrar investidor"); //exibirmenuinvestidorselecionado()
         System.out.println("2 - Cadastrar investidor em lote");
         System.out.println("3 - Exibir todos investidores");
         System.out.println("4 - Excluir investidores (lista de CPFs/CNPJs)");
         System.out.println("5 - Selecionar Investidor por CPF ou CNPJ");
+        System.out.println("0 - Voltar ao menu anterior");
+        System.out.print("\nSelecione uma opção: ");
+    }
+
+    public static void exibirMenuInvestidorSelecionado(){
+        System.out.println("\n--- MENU DO INVESTIDOR SELECIONADO ---");
+        System.out.println("1 - Editar informações do investidor"); //patrimonio n pode ser negativo
+        System.out.println("2 - Excluir investidor");
+        System.out.println("3 - Exibir ativos do investidor");
+        System.out.println("4 - Exibir valor total gasto");
+        System.out.println("5 - Exibir valor total atual");
+        System.out.println("6 - Exibir as porcentagens de produtos de renda fixa e de renda variável");
+        System.out.println("7 - Exibir as porcentagens de produtos nacionais e de produtos internacionais");
+        System.out.println("8 - Salvar relatório");
+        System.out.println("9 - Adicionar uma movimentação de compra");
+        System.out.println("10 - Adicionar uma movimentação de venda");
+        System.out.println("11 - Adicionar lote de movimentações");
         System.out.println("0 - Voltar ao menu anterior");
         System.out.print("\nSelecione uma opção: ");
     }

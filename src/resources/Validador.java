@@ -2,6 +2,7 @@ package resources;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
 public class Validador {
     public static int validarData(String dataStr) {
         if (dataStr == null || !dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) return -40; // Formato inválido
@@ -15,9 +16,9 @@ public class Validador {
             return -40;
         }
     }
-        /**
-     * tira todos os caracteres que nao sao numeros do documento
-     */
+    /*
+     tira todos os caracteres que nao sao numeros do documento
+    */
     public static String limparDocumento(String doc) {
         if (doc == null) return "";
         return doc.replaceAll("[^0-9]", "");

@@ -1,4 +1,4 @@
-package model;
+package model.Investidores;
 
 public class Institucional extends Investidor {
     private String razaoSocial;
@@ -8,5 +8,7 @@ public class Institucional extends Investidor {
         this.razaoSocial = razaoSocial;
     }
 
-    public String getRazaoSocial() { return razaoSocial; }
+    public String getRazaoSocial() { 
+        return razaoSocial; 
+    }
 }
