@@ -1,10 +1,11 @@
+package view;
 
 import java.util.ArrayList;
 import java.util.List;
 import Exceptions.OpcaoInvalidaException;
 import resources.CarregarCSV;
 import resources.Validador;
-import view.InterfaceUsuario;
+import view.Menus.MenuPrincipal;
 import model.*;
 import model.Investidores.Institucional;
 import model.Investidores.Investidor;
@@ -23,70 +24,15 @@ public class SistemaGestao {
         }
 
         InterfaceUsuario.exibirBoasVindas();
-        executarLoopPrincipal();
+        new MenuPrincipal().executar();
     }
 
-    private static void executarLoopPrincipal() {
-        int opcao = -1;
-        while (opcao != 0) {
-            InterfaceUsuario.exibirMenuPrincipal();
-            opcao = InterfaceUsuario.lerOpcao();
-
-            try {
-                if (opcao == 0) {
-                    InterfaceUsuario.exibirEncerrando();
-                } else if (opcao == -1) {
-                    InterfaceUsuario.exibirErroEntrada();
-                } else {
-                    processarOpcaoPrincipal(opcao);
-                }
-            } catch (OpcaoInvalidaException e) {
-                InterfaceUsuario.exibirErroCustomizado(e.getMessage());
-            }
-        }
-    }
-
-    private static void processarOpcaoPrincipal(int opcao) throws OpcaoInvalidaException {
-        switch (opcao) {
-            case 1: gerenciarAtivos(); break;
-            case 2: gerenciarInvestidores(); break; 
-            default: throw new OpcaoInvalidaException(opcao);
-        }
-    }
-
-    private static void gerenciarAtivos() {
-        int opcao = -1;
-        while (opcao != 0) {
-            InterfaceUsuario.exibirMenuAtivos();
-            opcao = InterfaceUsuario.lerOpcao();
-            if (opcao == 0) break;
-            
-            // Lógica de processamento de ativos aqui (Exibir listas, etc)
-        }
-    }
-
-    private static void gerenciarInvestidores() {
-        int opcao = -1;
-        while (opcao != 0) {
-            InterfaceUsuario.exibirMenuInvestidores();
-            opcao = InterfaceUsuario.lerOpcao();
-
-            switch (opcao) {
-                case 1:
-                    cadastrarInvestidor();
-                    break;
-                case 3:
-                    listarInvestidores();
-                    break;
-                case 0:
-                    break;
-                default:
-                    InterfaceUsuario.exibirErroCustomizado("Opção ainda não implementada.");
-            }
-        }
-    }
     
-    private static void cadastrarInvestidor() {
+    public static void cadastrarAtivo(){
+        // To-Do 
+    }
+
+    public static void cadastrarInvestidor() {
         String nome;
         while (true) {
             nome = InterfaceUsuario.lerNome();
@@ -128,7 +74,7 @@ public class SistemaGestao {
         InterfaceUsuario.exibirMensagemCarga(1); 
     }
 
-    private static Investidor buscarInvestidor(String doc) {
+    public static Investidor buscarInvestidor(String doc) {
     for (Investidor inv : listaInvestidores) {
         if (inv.getDocumento().equals(doc)) {
             return inv; // Encontrou o investidor
@@ -137,7 +83,7 @@ public class SistemaGestao {
     return null; // Percorreu a lista toda e não achou ninguém
 }
 
-    private static void listarInvestidores() {
+    public static void listarInvestidores() {
     // Se a lista estiver vazia, avisa a view sem usar Strings aqui
     if (listaInvestidores.isEmpty()) {
         InterfaceUsuario.exibirErroCustomizado("Nenhum investidor no sistema.");

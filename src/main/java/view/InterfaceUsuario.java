@@ -79,7 +79,7 @@ public class InterfaceUsuario {
     }
 
     public static void exibirErroEntrada() {
-        System.err.println("\nERRO: Entrada inválida. Por favor, digite apenas números.");
+    System.err.println("\nERRO: Entrada inválida. Por favor, digite números correspondentes às opções.");
     }
 
     public static void exibirErroCustomizado(String erro) {
