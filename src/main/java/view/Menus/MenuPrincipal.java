@@ -1,18 +1,18 @@
 package view.Menus;
 
 import Exceptions.OpcaoInvalidaException;
-import view.InterfaceUsuario;
+import view.ControleUsuario;
 
 public class MenuPrincipal extends MenuBase{
     @Override
     protected void exibirOpcoes() {
-        InterfaceUsuario.exibirMenuPrincipal();
+        ControleUsuario.exibirMenuPrincipal();
     }
 
      @Override
     public void executar() {
         super.executar();
-        InterfaceUsuario.exibirEncerrando();
+        ControleUsuario.exibirEncerrando();
     }
     
     @Override

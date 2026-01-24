@@ -1,6 +1,6 @@
 package model;
 
-public class Criptoativo extends Ativo {
+public class Criptoativo extends Ativo implements TipoAtivo{
     private String algoritmoConsenso;
     private String quantidadeMaxima;
     private double fatorConversao;
@@ -11,6 +11,11 @@ public class Criptoativo extends Ativo {
         this.algoritmoConsenso = algoritmo;
         this.quantidadeMaxima = qtdMax;
         this.fatorConversao = fatorConversao;
+    }
+
+    @Override
+    public String formatar(double valor) {
+        return String.format("$ %.2f", valor);
     }
 
     public double getPrecoEmReais() {

@@ -1,6 +1,6 @@
 package model;
 
-public class Tesouro extends Ativo {
+public class Tesouro extends Ativo implements TipoAtivo{
     private String tipoRendimento; // Selic, Prefixado ou IPCA+
     private String dataVencimento;
 
@@ -9,6 +9,11 @@ public class Tesouro extends Ativo {
         super(nome, ticker, precoAtual, qualificado);
         this.tipoRendimento = tipoRendimento;
         this.dataVencimento = dataVencimento;
+    }
+
+    @Override
+    public String formatar(double valor) {
+        return String.format("R$ %.2f", valor);
     }
 
     @Override

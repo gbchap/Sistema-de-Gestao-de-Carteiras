@@ -18,80 +18,161 @@ public class SistemaGestao {
         try {
             // Carga inicial obrigatória 
             bancoDeAtivos = CarregarCSV.carregarTodosAtivos();
-            InterfaceUsuario.exibirMensagemCarga(bancoDeAtivos.size());
+            ControleUsuario.exibirMensagemCarga(bancoDeAtivos.size());
         } catch (Exception e) {
-            InterfaceUsuario.exibirErroCustomizado(e.getMessage());
+            ControleUsuario.exibirErroCustomizado(e.getMessage());
         }
 
-        InterfaceUsuario.exibirBoasVindas();
+        ControleUsuario.exibirBoasVindas();
         new MenuPrincipal().executar();
     }
 
-    
+    //###############################  MENU ATIVOS ################################### 
+
     public static void cadastrarAtivo(){
-        // To-Do 
+        String nome;
+        while(true){
+            nome = ControleUsuario.lerNome();
+            int statusNome = Validador.validarTexto(nome);
+            if (statusNome == 0) break;
+            ControleUsuario.exibirMensagemErroValidador(statusNome);
+        }
+        String ticker;
+        while(true){
+            ticker = ControleUsuario.lerTicker();
+            int statusTicker = Validador.validarTexto(ticker);
+            if (statusTicker == 0) break;
+            ControleUsuario.exibirMensagemErroValidador(statusTicker);
+        }
+        double precoAtual = ControleUsuario.lerPrecoAtual();
+        boolean qualificado = ControleUsuario.lerQualificado();
+
+        listaAtivos.add(new Ativo(nome, ticker, precoAtual, qualificado));
+        
+        ControleUsuario.exibirMensagemCarga(1); 
     }
 
+    public static void cadastrarAtivoLote(){
+
+    }
+
+    public static void editaAtivo(){
+
+    }
+
+    public static void excluiAtivo(){
+
+    }
+
+    public static void exibirAtivos(int num){
+
+    }
+
+    //###############################  MENU INVESTIDOR ################################### 
     public static void cadastrarInvestidor() {
         String nome;
         while (true) {
-            nome = InterfaceUsuario.lerNome();
+            nome = ControleUsuario.lerNome();
             int statusNome = Validador.validarTexto(nome);
             if (statusNome == 0) break;
-            InterfaceUsuario.exibirMensagemErroValidador(statusNome); // Exibe erro -11
+            ControleUsuario.exibirMensagemErroValidador(statusNome); // Exibe erro -11
         }
         //validação da entrada do documento:
         String docRaw; // Declarada aqui para ser usada no loop
         int statusDoc;
         while (true) {
-            docRaw = InterfaceUsuario.lerDocumento();
+            docRaw = ControleUsuario.lerDocumento();
             statusDoc = Validador.validarDocumento(docRaw);
 
             if (statusDoc == 0) {
             // Se o formato estiver ok, agora conferimos a duplicidade (To-Do -6)
             String docLimpoTemp = Validador.limparDocumento(docRaw);
             if (buscarInvestidor(docLimpoTemp) != null) {
-                InterfaceUsuario.exibirMensagemErroValidador(-6);
+                ControleUsuario.exibirMensagemErroValidador(-6);
                 continue;
             }
             break; 
             } else {
-                InterfaceUsuario.exibirMensagemErroValidador(statusDoc);
+                ControleUsuario.exibirMensagemErroValidador(statusDoc);
             }
         }
 
         String docLimpo = Validador.limparDocumento(docRaw);
-        double patrimonio = InterfaceUsuario.lerPatrimonio();
+        double patrimonio = ControleUsuario.lerPrecoAtual();
         
         if (Validador.isCPF(docLimpo)) { 
-            String perfil = InterfaceUsuario.lerPerfil();
+            String perfil = ControleUsuario.lerPerfil();
             listaInvestidores.add(new PessoaFisica(nome, docLimpo, patrimonio, perfil));
         } else { 
-            String razao = InterfaceUsuario.lerRazaoSocial();
+            String razao = ControleUsuario.lerRazaoSocial();
             listaInvestidores.add(new Institucional(nome, docLimpo, patrimonio, razao));
         }
         
-        InterfaceUsuario.exibirMensagemCarga(1); 
+        ControleUsuario.exibirMensagemCarga(1); 
     }
 
     public static Investidor buscarInvestidor(String doc) {
-    for (Investidor inv : listaInvestidores) {
-        if (inv.getDocumento().equals(doc)) {
-            return inv; // Encontrou o investidor
+        for (Investidor inv : listaInvestidores) {
+            if (inv.getDocumento().equals(doc)) {
+                return inv; // Encontrou o investidor
+            }
         }
+        return null; // Percorreu a lista toda e não achou ninguém
     }
-    return null; // Percorreu a lista toda e não achou ninguém
-}
+
+    public static void cadastrarInvestidorLote(){
+
+    }
+    
+    public static void excluirInvestidores(){
+
+    }
 
     public static void listarInvestidores() {
     // Se a lista estiver vazia, avisa a view sem usar Strings aqui
-    if (listaInvestidores.isEmpty()) {
-        InterfaceUsuario.exibirErroCustomizado("Nenhum investidor no sistema.");
-        return;
+        if (listaInvestidores.isEmpty()) {
+            ControleUsuario.exibirErroCustomizado("Nenhum investidor no sistema.");
+            return;
+        }
+        
+        // O sistema apenas repassa a lista completa para a view tratar a exibição
+        ControleUsuario.exibirListaInvestidores(listaInvestidores);
     }
-    
-    // O sistema apenas repassa a lista completa para a view tratar a exibição
-    InterfaceUsuario.exibirListaInvestidores(listaInvestidores);
-}
-    
+
+//###############################  MENU INVESTIDOR SELECIONADO ################################### 
+
+
+    public static void editarInfoInvestidor(){
+        
+    }
+    public static void excluirInvestidor(){
+
+    }
+    public static void exibirAtivosInvestidor(){
+
+    }
+    public static void exibirValorTotalGasto(){
+
+    }
+    public static void exibirValorTotalAtual(){
+
+    }
+    public static void porcentRendas(){
+
+    }
+    public static void porcentProdutos(){
+
+    }
+    public static void salvarRelatorio(){
+
+    }
+    public static void adicionarMovCompra(){
+
+    }
+    public static void adicionarMovVenda(){
+
+    }
+    public static void adicionarLoteMov(){
+
+    }
 }

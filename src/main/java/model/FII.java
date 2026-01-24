@@ -1,6 +1,6 @@
 package model;
 
-public class FII extends Ativo {
+public class FII extends Ativo implements TipoAtivo {
     private String segmento;
     private double ultimoDividendo;
     private double taxaAdministracao;
@@ -15,6 +15,11 @@ public class FII extends Ativo {
 
     public String getTaxaFormatada() {
         return taxaAdministracao + "%";
+    }
+
+    @Override
+    public String formatar(double valor) {
+        return String.format("R$ %.2f", valor);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package model;
 
-public class Stock extends Ativo {
+public class Stock extends Ativo implements TipoAtivo {
     private String bolsa;
     private String setor;
     private double fatorConversao; // Ex: 5.39 PARA DOLAR
@@ -15,6 +15,11 @@ public class Stock extends Ativo {
 
     public double getPrecoEmReais() {
         return getPrecoAtual() * fatorConversao;
+    }
+
+    @Override
+    public String formatar(double valor) {
+        return String.format("$ %.2f", valor);
     }
 
     @Override

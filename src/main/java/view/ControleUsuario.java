@@ -8,7 +8,7 @@ import model.Investidores.Investidor;
 import model.Investidores.PessoaFisica;
 import resources.Validador;
 
-public class InterfaceUsuario {
+public class ControleUsuario {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void exibirBoasVindas() {
@@ -100,24 +100,39 @@ public class InterfaceUsuario {
         return scanner.nextLine();
     }
 
-    public static String lerDocumento() {
-        System.out.print("Digite o CPF/CNPJ: ");
+    public static String lerTicker(){
+        System.out.print("Digite o Código de Negociação (ticker) do ativo: ");
         return scanner.nextLine();
     }
 
-    public static double lerPatrimonio() {
+    public static double lerPrecoAtual(){
         while (true) {
-            System.out.print("Digite o patrimônio inicial: ");
+            System.out.print("Digite o preço/patrimônio atual: ");
             String entrada = scanner.nextLine();
             try {
                 double valor = Double.parseDouble(entrada.replace(",", "."));
-                if (valor > 0) return valor;
+                if (valor >= 0) return valor;
                 
                 exibirMensagemErroValidador(-20); // Código que criamos: "Valor deve ser > 0"
             } catch (NumberFormatException e) {
                 System.err.println("[ERRO]: Digite um valor numérico (ex: 1500.50)");
             }
         }
+    }
+
+    public static boolean lerQualificado() {
+        while (true) {
+            System.out.print("O ativo é restrito a investidores qualificados? (s/n): ");
+            String resposta = scanner.nextLine().trim().toLowerCase();
+            if (resposta.equals("s")) return true;
+            if (resposta.equals("n")) return false;
+            System.err.println("[ERRO]: Responda com 's' para sim ou 'n' para não.");
+        }
+    }
+
+    public static String lerDocumento() {
+        System.out.print("Digite o CPF/CNPJ: ");
+        return scanner.nextLine();
     }
 
     public static String lerPerfil() {

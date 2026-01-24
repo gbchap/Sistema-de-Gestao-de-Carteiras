@@ -1,5 +1,4 @@
 package model;
-
 /**
  * Classe abstrata que representa a base de qualquer ativo financeiro.
  * Não pode ser instanciada diretamente.
@@ -8,8 +7,8 @@ public abstract class Ativo {
     private String nome;
     private String ticker;
     private double precoAtual;
-    private boolean qualificado; // Indica se é restrito a investidores qualificados
-
+    private boolean qualificado; 
+    
     public Ativo(String nome, String ticker, double precoAtual, boolean qualificado) {
         if (ticker == null || ticker.trim().isEmpty()) {
             throw new IllegalArgumentException("O ticker do ativo não pode ser nulo ou vazio.");

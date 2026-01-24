@@ -1,7 +1,7 @@
 package view.Menus;
 
 import Exceptions.OpcaoInvalidaException;
-import view.InterfaceUsuario;
+import view.ControleUsuario;
 
 public abstract class MenuBase {
     protected abstract void exibirOpcoes();
@@ -11,16 +11,16 @@ public abstract class MenuBase {
         int opcao = -1;
         while (opcao !=0){
             exibirOpcoes();
-            opcao = InterfaceUsuario.lerOpcao(); 
+            opcao = ControleUsuario.lerOpcao(); 
 
             try{
                 if (opcao == -1){
-                    InterfaceUsuario.exibirErroEntrada();           
+                    ControleUsuario.exibirErroEntrada();           
                 } else if (opcao != 0) {
                     processarEscolha(opcao);
                 }
             }catch (OpcaoInvalidaException e){
-                InterfaceUsuario.exibirErroCustomizado(e.getMessage());
+                ControleUsuario.exibirErroCustomizado(e.getMessage());
             }
         }
     }
