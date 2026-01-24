@@ -47,7 +47,7 @@ public class SistemaGestao {
         double precoAtual = ControleUsuario.lerPrecoAtual();
         boolean qualificado = ControleUsuario.lerQualificado();
 
-        listaAtivos.add(new Ativo(nome, ticker, precoAtual, qualificado));
+        listaAtivos.add(new Ativo(nome, ticker, precoAtual, qualificado)); //resolver lista
         
         ControleUsuario.exibirMensagemCarga(1); 
     }
