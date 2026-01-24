@@ -19,11 +19,11 @@ public class MenuInvestidores extends MenuBase {
     @Override
     protected void processarEscolha(int opcao) throws OpcaoInvalidaException {
         switch (opcao) {
-            case 1: SistemaGestao.cadastrarInvestidor();
-            case 2: SistemaGestao.cadastrarInvestidorLote();    
-            case 3: SistemaGestao.listarInvestidores(); 
-            case 4: SistemaGestao.excluirInvestidores();
-            case 5: new MenuInvestidorSelected().executar();
+            case 1: SistemaGestao.cadastrarInvestidor();break;
+            case 2: SistemaGestao.cadastrarInvestidorLote();break;
+            case 3: SistemaGestao.listarInvestidores(); break;
+            case 4: SistemaGestao.excluirInvestidores();break;
+            case 5: new MenuInvestidorSelected().executar();break;
             default: throw new OpcaoInvalidaException(opcao);
         }
     }

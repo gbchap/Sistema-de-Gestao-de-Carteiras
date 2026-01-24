@@ -18,8 +18,8 @@ public class MenuPrincipal extends MenuBase{
     @Override
     protected void processarEscolha(int opcao) throws Exceptions.OpcaoInvalidaException {
         switch (opcao) {
-            case 1: new MenuAtivos().executar(); 
-            case 2: new MenuInvestidores().executar(); 
+            case 1: new MenuAtivos().executar();break;
+            case 2: new MenuInvestidores().executar();break; 
             default: throw new OpcaoInvalidaException(opcao);
         }
     }   

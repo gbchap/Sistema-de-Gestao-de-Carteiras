@@ -29,27 +29,29 @@ public class SistemaGestao {
 
     //###############################  MENU ATIVOS ################################### 
 
-    public static void cadastrarAtivo(){
-        String nome;
-        while(true){
-            nome = ControleUsuario.lerNome();
-            int statusNome = Validador.validarTexto(nome);
-            if (statusNome == 0) break;
-            ControleUsuario.exibirMensagemErroValidador(statusNome);
-        }
-        String ticker;
-        while(true){
-            ticker = ControleUsuario.lerTicker();
-            int statusTicker = Validador.validarTexto(ticker);
-            if (statusTicker == 0) break;
-            ControleUsuario.exibirMensagemErroValidador(statusTicker);
-        }
-        double precoAtual = ControleUsuario.lerPrecoAtual();
+    public static void cadastrarAtivo() {
+        // A View agora já entrega tudo validado
+        String nome = ControleUsuario.lerNome();
+        String ticker = ControleUsuario.lerTicker();
+        double preco = ControleUsuario.lerPrecoAtual();
         boolean qualificado = ControleUsuario.lerQualificado();
+        int tipo = ControleUsuario.lerTipoAtivo();
 
-        listaAtivos.add(new Ativo(nome, ticker, precoAtual, qualificado)); //resolver lista
+        Ativo novo = criarAtivoPorTipo(tipo, nome, ticker, preco, qualificado);
         
-        ControleUsuario.exibirMensagemCarga(1); 
+        bancoDeAtivos.add(novo);
+        ControleUsuario.exibirMensagemCarga(1);
+    }
+
+    private static Ativo criarAtivoPorTipo(int tipo, String n, String t, double p, boolean q) {
+        return switch (tipo) {
+            case 1 -> new Acao(n, t, p, q);
+            case 2 -> new FII(n, t, p, q, "Geral", 0.0, 0.0);
+            case 3 -> new Criptoativo(n, t, p, q, "N/A", "Ilimitado", 5.39);
+            case 4 -> new Stock(n, t, p, q, "NYSE", "Setor", 5.39);
+            case 5 -> new Tesouro(n, t, p, q, "Prefixado", "01/01/2030");
+            default -> throw new IllegalArgumentException("Tipo inválido");
+        };
     }
 
     public static void cadastrarAtivoLote(){
@@ -64,9 +66,8 @@ public class SistemaGestao {
 
     }
 
-    public static void exibirAtivos(int num){
 
-    }
+    
 
     //###############################  MENU INVESTIDOR ################################### 
     public static void cadastrarInvestidor() {
@@ -138,6 +139,32 @@ public class SistemaGestao {
         // O sistema apenas repassa a lista completa para a view tratar a exibição
         ControleUsuario.exibirListaInvestidores(listaInvestidores);
     }
+
+    public static void exibirAtivos(int num) {
+    // num vem do MenuAtivos: (opcao - 6)
+    // -1: Todos, 0: Ações, 1: FIIs, 2: Cripto, 3: Stocks, 4: Tesouro
+
+    if (num == -1) { // Caso "Todos os ativos" (Opção 5 do menu)
+        ControleUsuario.exibirTabelaAtivos(bancoDeAtivos);
+        return;
+    }
+
+    List<Ativo> filtrados = new ArrayList<>();
+    for (Ativo a : bancoDeAtivos) {
+        // Filtra usando 'instanceof' para saber a subclasse real do Ativo
+        if (num == 0 && a instanceof model.Acao) filtrados.add(a);
+        else if (num == 1 && a instanceof model.FII) filtrados.add(a);
+        else if (num == 2 && a instanceof model.Criptoativo) filtrados.add(a);
+        else if (num == 3 && a instanceof model.Stock) filtrados.add(a);
+        else if (num == 4 && a instanceof model.Tesouro) filtrados.add(a);
+    }
+
+    if (filtrados.isEmpty()) {
+        ControleUsuario.exibirErroCustomizado("Nenhum ativo encontrado para esta categoria.");
+    } else {
+        ControleUsuario.exibirTabelaAtivos(filtrados);
+    }
+}
 
 //###############################  MENU INVESTIDOR SELECIONADO ################################### 
 

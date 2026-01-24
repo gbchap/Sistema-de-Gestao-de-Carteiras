@@ -3,10 +3,12 @@ package view;
 import java.util.List;
 import java.util.Scanner;
 
+import model.Ativo;
 import model.Investidores.Institucional;
 import model.Investidores.Investidor;
 import model.Investidores.PessoaFisica;
 import resources.Validador;
+
 
 public class ControleUsuario {
     private static final Scanner scanner = new Scanner(System.in);
@@ -94,15 +96,29 @@ public class ControleUsuario {
         }
     }
 
-    // Métodos de Leitura Limpos
-    public static String lerNome() {
-        System.out.print("Digite o nome: ");
-        return scanner.nextLine();
+    // Método auxiliar para ler qualquer texto com validação (Nome, Ticker, etc)
+    private static String lerTextoValidado(String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine();
+            int status = Validador.validarTexto(entrada);
+            if (status == 0) return entrada;
+            exibirMensagemErroValidador(status);
+        }
     }
 
-    public static String lerTicker(){
-        System.out.print("Digite o Código de Negociação (ticker) do ativo: ");
-        return scanner.nextLine();
+    public static String lerNome() { return lerTextoValidado("Digite o nome: "); }
+    public static String lerTicker() { return lerTextoValidado("Digite o ticker: "); }
+
+    public static int lerTipoAtivo() {
+        while (true) {
+            System.out.println("\n--- SELECIONE O TIPO DE ATIVO ---");
+            System.out.println("1-Ação | 2-FII | 3-Cripto | 4-Stock | 5-Tesouro");
+            System.out.print("Opção: ");
+            int op = lerOpcao();
+            if (op >= 1 && op <= 5) return op;
+            exibirMensagemErroValidador(-30); // "Opção inválida"
+        }
     }
 
     public static double lerPrecoAtual(){
@@ -221,5 +237,23 @@ public class ControleUsuario {
             System.err.println("\n[ERRO]: " + mensagem);
         }
     }
+    public static void exibirTabelaAtivos(List<Ativo> ativos) {
+        System.out.println("\n--- RELATÓRIO DE ATIVOS ---");
+        // Cabeçalho da tabela
+        System.out.printf("%-10s | %-30s | %-15s | %-10s\n", "Ticker", "Nome", "Preço", "Qualificado");
+        System.out.println("---------------------------------------------------------------------------");
 
+        for (Ativo a : ativos) {
+            // Usamos polimorfismo com a interface TipoAtivo para formatar o preço (R$ ou $)
+            String precoFormatado = ((model.TipoAtivo) a).formatar(a.getPrecoAtual());
+            
+            System.out.printf("%-10s | %-30s | %-15s | %-10s\n", 
+                a.getTicker(), 
+                a.getNome(), 
+                precoFormatado, 
+                a.isQualificado() ? "Sim" : "Não");
+        }
+        System.out.println("---------------------------------------------------------------------------");
+    }
+   
 }
