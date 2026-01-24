@@ -27,7 +27,7 @@ public class SistemaGestao {
         new MenuPrincipal().executar();
     }
 
-    //###############################  MENU ATIVOS ################################### 
+//###############################  MENU ATIVOS ################################### 
 
     public static void cadastrarAtivo() {
         // A View agora já entrega tudo validado
@@ -121,10 +121,19 @@ public class SistemaGestao {
         return null; // Percorreu a lista toda e não achou ninguém
     }
 
-    public static void cadastrarInvestidorLote(){
-
-    }
-    
+    public static void cadastrarInvestidorLote() {
+        // IMPORTANTE: Tente primeiro este caminho. Se der erro, remova o "src/".
+        String caminho = "resources/Arquivoscsv/investidores.csv"; 
+        
+        List<Investidor> novos = CarregarCSV.lerInvestidores(caminho);
+        
+        if (!novos.isEmpty()) {
+            listaInvestidores.addAll(novos);
+            ControleUsuario.exibirMensagemCarga(novos.size());
+        } else {
+            ControleUsuario.exibirErroCustomizado("Nao foi possivel carregar o lote de investidores.");
+        }
+    } 
     public static void excluirInvestidores(){
 
     }
@@ -140,31 +149,84 @@ public class SistemaGestao {
         ControleUsuario.exibirListaInvestidores(listaInvestidores);
     }
 
+
+    
+    // Variável de sessão para o investidor atual
+    private static Investidor investidorLogado = null;
+
+    public static void selecionarInvestidor() {
+        String doc = ControleUsuario.lerDocumentoValidado();
+        Investidor encontrado = buscarInvestidor(doc); 
+
+        if (encontrado != null) {
+            investidorLogado = encontrado; //
+            ControleUsuario.exibirMensagemCarga(1); // Sucesso na seleção
+            new view.Menus.MenuInvestidorSelected().executar(); // Abre o menu do investidor [cite: 131]
+            
+            // Ao voltar do menu, "desloga" por segurança
+            investidorLogado = null; 
+        } else {
+            ControleUsuario.exibirErroCustomizado("Investidor não encontrado com o documento: " + doc); //
+        }
+    }
+
+    /**
+     * Regra de Negócio: Verifica se o investidor logado tem permissão para o ativo.
+     */
+    public static boolean validarPermissaoInvestimento(Ativo ativo) {
+        if (investidorLogado instanceof Institucional) return true; // Institucional pode tudo [cite: 207]
+        
+        PessoaFisica pf = (PessoaFisica) investidorLogado;
+        String perfil = pf.getPerfil();
+
+        // 1. Trava de Qualificado (Patrimônio >= 1M)
+        if (ativo.isQualificado() && !pf.isQualificado()) {
+            ControleUsuario.exibirErroCustomizado("Ativo restrito a investidores qualificados.");
+            return false;
+        }
+
+        // 2. Trava de Criptoativos (Apenas Arrojados)
+        if (ativo instanceof Criptoativo && !perfil.equals("Arrojado")) {
+            ControleUsuario.exibirErroCustomizado("Apenas perfis Arrojados podem operar Criptoativos.");
+            return false;
+        }
+
+        // 3. Trava de Stocks (Moderado ou Arrojado)
+        if (ativo instanceof Stock && perfil.equals("Conservador")) {
+            ControleUsuario.exibirErroCustomizado("Perfis Conservadores não podem operar Stocks.");
+            return false;
+        }
+
+        return true;
+    }
+
     public static void exibirAtivos(int num) {
-    // num vem do MenuAtivos: (opcao - 6)
-    // -1: Todos, 0: Ações, 1: FIIs, 2: Cripto, 3: Stocks, 4: Tesouro
+        // num vem do MenuAtivos: (opcao - 6)
+        // -1: Todos, 0: Ações, 1: FIIs, 2: Cripto, 3: Stocks, 4: Tesouro
 
-    if (num == -1) { // Caso "Todos os ativos" (Opção 5 do menu)
-        ControleUsuario.exibirTabelaAtivos(bancoDeAtivos);
-        return;
-    }
+        if (num == -1) { // Caso "Todos os ativos" (Opção 5 do menu)
+            ControleUsuario.exibirTabelaAtivos(bancoDeAtivos);
+            return;
+        }
 
-    List<Ativo> filtrados = new ArrayList<>();
-    for (Ativo a : bancoDeAtivos) {
-        // Filtra usando 'instanceof' para saber a subclasse real do Ativo
-        if (num == 0 && a instanceof model.Acao) filtrados.add(a);
-        else if (num == 1 && a instanceof model.FII) filtrados.add(a);
-        else if (num == 2 && a instanceof model.Criptoativo) filtrados.add(a);
-        else if (num == 3 && a instanceof model.Stock) filtrados.add(a);
-        else if (num == 4 && a instanceof model.Tesouro) filtrados.add(a);
-    }
 
-    if (filtrados.isEmpty()) {
-        ControleUsuario.exibirErroCustomizado("Nenhum ativo encontrado para esta categoria.");
-    } else {
-        ControleUsuario.exibirTabelaAtivos(filtrados);
+
+        List<Ativo> filtrados = new ArrayList<>();
+        for (Ativo a : bancoDeAtivos) {
+            // Filtra usando 'instanceof' para saber a subclasse real do Ativo
+            if (num == 0 && a instanceof model.Acao) filtrados.add(a);
+            else if (num == 1 && a instanceof model.FII) filtrados.add(a);
+            else if (num == 2 && a instanceof model.Criptoativo) filtrados.add(a);
+            else if (num == 3 && a instanceof model.Stock) filtrados.add(a);
+            else if (num == 4 && a instanceof model.Tesouro) filtrados.add(a);
+        }
+
+        if (filtrados.isEmpty()) {
+            ControleUsuario.exibirErroCustomizado("Nenhum ativo encontrado para esta categoria.");
+        } else {
+            ControleUsuario.exibirTabelaAtivos(filtrados);
+        }
     }
-}
 
 //###############################  MENU INVESTIDOR SELECIONADO ################################### 
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Investidores.Investidor;
 import model.*;
 
 public class CarregarCSV {
@@ -135,5 +136,31 @@ public class CarregarCSV {
             System.err.println("Erro ao ler tesouro.csv: " + e.getMessage());
         }
         return lista;
+        }
+    public static List<Investidor> lerInvestidores(String caminho) {
+        List<Investidor> lista = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
+            br.readLine(); // Pula o cabeçalho
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] d = linha.split(";");
+                String nome = d[0];
+                String doc = d[1];
+                double patri = Double.parseDouble(d[2]);
+                String tipo = d[3]; // PF ou PJ
+                String extra = d[4]; // Perfil ou Razão Social
+
+                if (tipo.equalsIgnoreCase("PF")) {
+                    lista.add(new model.Investidores.PessoaFisica(nome, doc, patri, extra));
+                } else {
+                    lista.add(new model.Investidores.Institucional(nome, doc, patri, extra));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao ler investidores: " + e.getMessage());
+        }
+        return lista;
+
+        
     }
 }

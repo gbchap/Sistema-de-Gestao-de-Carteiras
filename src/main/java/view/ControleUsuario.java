@@ -255,5 +255,14 @@ public class ControleUsuario {
         }
         System.out.println("---------------------------------------------------------------------------");
     }
+    public static String lerDocumentoValidado() {
+    while (true) {
+        System.out.print("Digite o CPF/CNPJ do investidor: ");
+        String docRaw = scanner.nextLine();
+        int status = Validador.validarDocumento(docRaw); //
+        if (status == 0) return Validador.limparDocumento(docRaw);
+        exibirMensagemErroValidador(status);
+    }
+}
    
 }

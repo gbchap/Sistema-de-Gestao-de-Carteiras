@@ -23,7 +23,7 @@ public class MenuInvestidores extends MenuBase {
             case 2: SistemaGestao.cadastrarInvestidorLote();break;
             case 3: SistemaGestao.listarInvestidores(); break;
             case 4: SistemaGestao.excluirInvestidores();break;
-            case 5: new MenuInvestidorSelected().executar();break;
+            case 5: SistemaGestao.selecionarInvestidor(); break;
             default: throw new OpcaoInvalidaException(opcao);
         }
     }
