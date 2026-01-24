@@ -122,7 +122,7 @@ public class SistemaGestao {
     }
 
     public static void cadastrarInvestidorLote() {
-        // IMPORTANTE: Tente primeiro este caminho. Se der erro, remova o "src/".
+        // ussar primeiro um caminho fixo para teste, depois pedir para o usuario inserir
         String caminho = "resources/Arquivoscsv/investidores.csv"; 
         
         List<Investidor> novos = CarregarCSV.lerInvestidores(caminho);
