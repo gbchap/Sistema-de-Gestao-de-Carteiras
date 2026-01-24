@@ -264,5 +264,10 @@ public class ControleUsuario {
         exibirMensagemErroValidador(status);
     }
 }
-   
+   // Apenas prints simples
+public static void exibirSucessoExportacao(String nomeArquivo) {
+    System.out.println("\n[SISTEMA]: Relatório gerado com sucesso!");
+    System.out.println("[ARQUIVO]: " + nomeArquivo);
+}
+
 }

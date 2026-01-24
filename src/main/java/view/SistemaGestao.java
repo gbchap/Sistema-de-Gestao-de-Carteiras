@@ -159,14 +159,16 @@ public class SistemaGestao {
         Investidor encontrado = buscarInvestidor(doc); 
 
         if (encontrado != null) {
-            investidorLogado = encontrado; //
-            ControleUsuario.exibirMensagemCarga(1); // Sucesso na seleção
-            new view.Menus.MenuInvestidorSelected().executar(); // Abre o menu do investidor [cite: 131]
+            investidorLogado = encontrado; // 1. Loga
+            ControleUsuario.exibirMensagemCarga(1); // 2. Avisa
             
-            // Ao voltar do menu, "desloga" por segurança
+            // 3. ENTRA NO MENU (Confira se essa linha está aí!)
+            new view.Menus.MenuInvestidorSelected().executar(); 
+            
+            // 4. SÓ CHEGA AQUI QUANDO SAIR DO MENU ACIMA
             investidorLogado = null; 
         } else {
-            ControleUsuario.exibirErroCustomizado("Investidor não encontrado com o documento: " + doc); //
+            ControleUsuario.exibirErroCustomizado("Investidor não encontrado.");
         }
     }
 
@@ -229,8 +231,53 @@ public class SistemaGestao {
     }
 
 //###############################  MENU INVESTIDOR SELECIONADO ################################### 
+public static void salvarRelatorio() {
+    if (investidorLogado == null) {
+        ControleUsuario.exibirErroCustomizado("Nenhum investidor selecionado.");
+        return;
+    }
 
+    String nomeArquivo = "relatorio_" + investidorLogado.getDocumento() + ".json";
+    
+    try (java.io.PrintWriter out = new java.io.PrintWriter(new java.io.FileWriter(nomeArquivo))) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\n");
+        sb.append("  \"nome\": \"").append(investidorLogado.getNome()).append("\",\n");
+        sb.append("  \"documento\": \"").append(investidorLogado.getDocumento()).append("\",\n");
+        sb.append("  \"patrimonioTotal\": ").append(investidorLogado.getPatrimonioTotal()).append(",\n");
 
+        // Lógica de negócio no Controller
+        if (investidorLogado instanceof model.Investidores.PessoaFisica pf) {
+            sb.append("  \"tipo\": \"PF\",\n");
+            sb.append("  \"perfil\": \"").append(pf.getPerfil()).append("\",\n");
+        } else if (investidorLogado instanceof model.Investidores.Institucional pj) {
+            sb.append("  \"tipo\": \"PJ\",\n");
+            sb.append("  \"razaoSocial\": \"").append(pj.getRazaoSocial()).append("\",\n");
+        }
+
+        sb.append("  \"carteira\": [\n");
+        var itens = investidorLogado.getCarteira().getItens();
+        for (int i = 0; i < itens.size(); i++) {
+            var item = itens.get(i);
+            sb.append("    {\n");
+            sb.append("      \"ticker\": \"").append(item.getAtivo().getTicker()).append("\",\n");
+            sb.append("      \"quantidade\": ").append(item.getQuantidade()).append(",\n");
+            sb.append("      \"precoMedio\": ").append(item.getPrecoMedio()).append("\n");
+            sb.append("    }");
+            if (i < itens.size() - 1) sb.append(",");
+            sb.append("\n");
+        }
+        sb.append("  ]\n}");
+        
+        out.print(sb.toString());
+        
+        // A View só entra aqui para dar o aviso final
+        ControleUsuario.exibirSucessoExportacao(nomeArquivo);
+        
+    } catch (java.io.IOException e) {
+        ControleUsuario.exibirErroCustomizado("Erro ao salvar arquivo: " + e.getMessage());
+    }
+}
     public static void editarInfoInvestidor(){
         
     }
@@ -252,9 +299,7 @@ public class SistemaGestao {
     public static void porcentProdutos(){
 
     }
-    public static void salvarRelatorio(){
 
-    }
     public static void adicionarMovCompra(){
 
     }
