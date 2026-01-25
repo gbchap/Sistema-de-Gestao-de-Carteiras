@@ -26,8 +26,6 @@ public abstract class Ativo {
         return this.precoAtual;
     }
 
-    // getters e setters 
-    
     public String getNome() {
         return nome;
     }

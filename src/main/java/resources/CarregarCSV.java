@@ -16,7 +16,6 @@ import model.Investidores.Investidor;
 
 public class CarregarCSV {
 
-    // Ajusta este caminho conforme a estrutura 
     private static final String BASE_PATH = "Arquivoscsv/";
     
     public static List<Ativo> carregarTodosAtivos() {
@@ -34,7 +33,7 @@ public class CarregarCSV {
     public static List<Acao> lerAcoes(String caminho) {
         List<Acao> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
-            String linha = br.readLine(); // Pular cabeçalhol
+            String linha = br.readLine(); 
             while ((linha = br.readLine()) != null) {
                 String[] dados = linha.split(";");
                 // Ticker;Nome;Preço;Qualificado
@@ -55,13 +54,12 @@ public class CarregarCSV {
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha = br.readLine();
             while ((linha = br.readLine()) != null) {
-               // uma validação doida aqui pra ler direito pq nao parava de cair no erro de multiple points
+               
                 String[] d = linha.split(";");
 
                 if (d.length < 6 || d[3].equals("-")) continue; 
 
                 try {
-                    // TRATAMENTO DEFINITIVO:
                     // 1. d[3].replace(".", "") -> Remove o ponto de milhar (ex: 1.051.35 vira 1051.35)
                     // 2. .replace(",", ".") -> Caso exista vírgula, troca por ponto para o padrão Java
                     String precoTratado = d[3].replace(".", "").replace(",", ".");
@@ -73,7 +71,6 @@ public class CarregarCSV {
 
                     lista.add(new FII(d[1], d[0], preco, false, d[2], dividendo, taxa));
                 } catch (NumberFormatException e) {
-                    // aqui o sistema avida qual linha deu problema
                     System.err.println("Falha ao converter valores na linha: " + linha);
                 } 
             }
@@ -90,14 +87,10 @@ public class CarregarCSV {
             while ((linha = br.readLine()) != null) {
                 String[] d = linha.split(";");
                 // Ticker;Nome;Preço(USD);Consenso;Max
-                
-                // TRATAMENTO DO ERRO "Index out of bounds":
-                // Verificamos se a coluna existe antes de tentar ler
                 String ticker = d[0];
                 String nome = d[1];
                 double preco = Double.parseDouble(d[2]);
                 
-                // Se o tamanho do array d for maior que 3, a coluna existe; senão, usamos um padrão
                 String consenso = (d.length > 3) ? d[3] : "N/A";
                 String qtdMax = (d.length > 4) ? d[4] : "Ilimitado";
 
@@ -142,7 +135,7 @@ public class CarregarCSV {
     public static List<Investidor> lerInvestidores(String caminho) {
         List<Investidor> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
-            br.readLine(); // Pula o cabeçalho
+            br.readLine(); 
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] d = linha.split(";");

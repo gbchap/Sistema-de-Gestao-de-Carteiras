@@ -57,7 +57,7 @@ public class ControleUsuario {
 
     public static void exibirMenuInvestidorSelecionado(){
         System.out.println("\n--- MENU DO INVESTIDOR SELECIONADO ---");
-        System.out.println("1 - Editar informações do investidor"); //patrimonio n pode ser negativo
+        System.out.println("1 - Editar informações do investidor");
         System.out.println("2 - Excluir investidor");
         System.out.println("3 - Exibir ativos do investidor");
         System.out.println("4 - Exibir valor total gasto");
@@ -96,7 +96,6 @@ public class ControleUsuario {
         }
     }
 
-    // Método auxiliar para ler qualquer texto com validação (Nome, Ticker, etc)
     private static String lerTextoValidado(String mensagem) {
         while (true) {
             System.out.print(mensagem);
@@ -117,7 +116,7 @@ public class ControleUsuario {
             System.out.print("Opção: ");
             int op = lerOpcao();
             if (op >= 1 && op <= 5) return op;
-            exibirMensagemErroValidador(-30); // "Opção inválida"
+            exibirMensagemErroValidador(-30); 
         }
     }
 
@@ -165,7 +164,7 @@ public class ControleUsuario {
                 case "2": return "Moderado";
                 case "3": return "Arrojado";
                 default:
-                    exibirMensagemErroValidador(-30); // Código: "Opção inválida"
+                    exibirMensagemErroValidador(-30); 
             }
         }
     }
@@ -174,7 +173,7 @@ public class ControleUsuario {
         while (true) {
         System.out.print("Digite a Razão Social da Instituição: ");
         String razao = scanner.nextLine();
-        int status = Validador.validarTexto(razao); // Reusando o erro -10 e -11
+        int status = Validador.validarTexto(razao);
         
         if (status == 0) return razao;
         
@@ -182,7 +181,6 @@ public class ControleUsuario {
     }
     }
 
-    // MÉTODO CORRIGIDO: Recebe a lista e formata os dados
     public static void exibirListaInvestidores(List<Investidor> investidores) {
         System.out.println("\n--- LISTA DE INVESTIDORES ---");
         if (investidores.isEmpty()) {
@@ -210,7 +208,7 @@ public class ControleUsuario {
         boolean incluirRegraDoc = false;
 
         switch (codigoErro) {
-            // --- ERROS DE DOCUMENTO (Precisam da REGRA_DOC no final) ---
+            
             case -1: mensagem = "O documento não pode estar vazio."; break;
             case -2: mensagem = "Documento muito curto."; incluirRegraDoc = true; break;
             case -3: mensagem = "Tamanho de documento inválido."; incluirRegraDoc = true; break;
@@ -219,7 +217,7 @@ public class ControleUsuario {
             case -6: mensagem = "Este documento já está cadastrado no sistema."; break;
             case -7: mensagem = "Documento inválido (números repetidos)."; incluirRegraDoc = true; break;
 
-            // --- ERROS GERAIS (NÃO precisam da REGRA_DOC) ---
+            
             case -10: mensagem = "O campo não pode estar vazio."; break;
             case -11: mensagem = "O texto é muito curto (mínimo 3 caracteres)."; break;
             case -20: mensagem = "O valor deve ser maior que zero."; break;
@@ -300,7 +298,7 @@ public class ControleUsuario {
         while (true) {
             System.out.print("Digite a data de nascimento (dd/mm/aaaa): ");
             String data = scanner.nextLine();
-            int status = Validador.validarData(data); // Usa a lógica já existente no Validador
+            int status = Validador.validarData(data); 
             if (status == 0) return data;
             exibirMensagemErroValidador(status);
         }

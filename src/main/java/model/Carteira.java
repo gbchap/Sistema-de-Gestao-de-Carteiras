@@ -17,12 +17,12 @@ public class Carteira {
         this.itens.add(item);
     }
 
-    // REMOÇÃO EM CASCATA: Método que será chamado pelo SistemaGestao
+    
     public void removerAtivoPorTicker(String ticker) {
         itens.removeIf(item -> item.getAtivo().getTicker().equalsIgnoreCase(ticker));
     }
 
-    // Valor Total considerando conversão (Pilar do PDF)
+    
     public double getValorTotalEmReais() {
         double total = 0;
         for (ItemCarteira item : itens) {
@@ -31,7 +31,7 @@ public class Carteira {
         return total;
     }
 
-    // Métodos para os relatórios de porcentagem
+    
     public double getPercentualRendaFixa() {
         double totalGeral = getValorTotalEmReais();
         if (totalGeral == 0) return 0;
@@ -45,7 +45,7 @@ public class Carteira {
     }
 
         public double getPercentualRendaVariavel() {
-        return 100 - getPercentualRendaFixa(); // O que não é Tesouro, é variável neste escopo
+        return 100 - getPercentualRendaFixa(); 
     }
 
     

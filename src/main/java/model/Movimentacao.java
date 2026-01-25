@@ -23,7 +23,6 @@ public class Movimentacao {
         this.dataHora = LocalDateTime.now();
     }
 
-    // Getters
     public Ativo getAtivo() { return ativo; }
     public double getQuantidade() { return quantidade; }
     public double getPrecoExecucao() { return precoExecucao; }

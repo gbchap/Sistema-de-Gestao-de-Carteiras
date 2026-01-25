@@ -18,7 +18,6 @@ public class SalvaAtivo {
             default -> throw new IOException("Tipo de ativo não mapeado para CSV.");
         };
 
-        // O 'true' ativa o modo de adição (não sobrescreve o ficheiro)
         try (PrintWriter out = new PrintWriter(new FileWriter(PATH + nomeFicheiro, true))) {
             StringBuilder sb = new StringBuilder();
             sb.append("\n")

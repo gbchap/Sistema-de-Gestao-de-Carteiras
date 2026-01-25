@@ -10,8 +10,8 @@ import model.Movimentacao;
 
 public abstract class Investidor {
     private String nome;
-    private String documento; // para o CPF ou CNPJ 
-    private double patrimonioTotal; // Em Real [tipo : 113]
+    private String documento; 
+    private double patrimonioTotal; 
     private String telefone;        
     private String dataNascimento;  
     private String endereco;       
@@ -33,7 +33,7 @@ public Investidor(String nome, String documento, String telefone, String dataNas
         this.historico.add(m);
     }
 
-    // getters e setters
+   
     public String getNome() { return nome; }
     public String getDocumento() { return documento; }
     public double getPatrimonioTotal() { return patrimonioTotal; }
@@ -60,7 +60,7 @@ public Investidor(String nome, String documento, String telefone, String dataNas
         this.patrimonioTotal = patrimonio;
     }
 
-    // esse método é para verificar se é investidor qualificado (>= 1 milhão) (só uma validação)
+    
     public boolean isQualificado() {
         return this.patrimonioTotal >= 1000000.0;
     }
@@ -74,7 +74,7 @@ public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao, S
     }
 
     if (itemExistente != null) {
-        // Lógica de Preço Médio: (Qtd Atual * PM Atual + Nova Qtd * Novo Preço) / Qtd Total
+       
         double custoTotalAntigo = itemExistente.getQuantidade() * itemExistente.getPrecoMedio();
         double novoCusto = quantidade * precoExecucao;
         double novaQuantidade = itemExistente.getQuantidade() + quantidade;
@@ -82,22 +82,22 @@ public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao, S
         itemExistente.setQuantidade(novaQuantidade);
         itemExistente.setPrecoMedio((custoTotalAntigo + novoCusto) / novaQuantidade);
     } else {
-        // ai se não tinha o ativo, adiciona um novo Item na carteira
+        
         carteira.adicionarItem(new ItemCarteira(ativo, quantidade, precoExecucao));
     }
     
-    // salva no histórico
+    
     this.historico.add(new Movimentacao("C"+System.currentTimeMillis(), ativo, quantidade, precoExecucao, "Compra", instituicao));
 }
 
 public boolean venderAtivo(String ticker, double quantidade, String instituicao) {
     for (ItemCarteira item : carteira.getItens()) {
         if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
-            // TRAVA DE SEGURANÇA: Não vende o que não tem
+            
             if (item.getQuantidade() >= quantidade) {
                 item.setQuantidade(item.getQuantidade() - quantidade);
                 
-                // Se zerar a posição, removemos o item da carteira
+                
                 if (item.getQuantidade() <= 0) {
                     carteira.getItens().remove(item);
                 }

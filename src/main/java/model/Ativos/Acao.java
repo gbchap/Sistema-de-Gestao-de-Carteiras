@@ -10,7 +10,7 @@ public class Acao extends Ativo implements TipoAtivo {
     public String getTipoAcao() {
         if (getTicker().endsWith("3")) return "Ordinária";
         if (getTicker().endsWith("11")) return "Unit";
-        return "Preferencial"; // Finais 4, 5 ou 6
+        return "Preferencial";
     }
 
     @Override

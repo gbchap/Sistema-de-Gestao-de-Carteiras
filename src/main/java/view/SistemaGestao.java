@@ -37,7 +37,7 @@ public class SistemaGestao {
     //###############################  MENU ATIVOS ################################### 
 
     public static void cadastrarAtivo() {
-        // A View agora já entrega tudo validado
+        
         String nome = ControleUsuario.lerNome();
         String ticker = ControleUsuario.lerTicker();
         double preco = ControleUsuario.lerPrecoAtual();
@@ -79,7 +79,7 @@ public class SistemaGestao {
 
         List<Ativo> filtrados = new ArrayList<>();
         for (Ativo a : bancoDeAtivos) {
-            // Filtra usando 'instanceof' para saber a subclasse real do Ativo
+            
             if (num == 0 && a instanceof model.Ativos.Acao) filtrados.add(a);
             else if (num == 1 && a instanceof model.Ativos.FII) filtrados.add(a);
             else if (num == 2 && a instanceof model.Ativos.Criptoativo) filtrados.add(a);
@@ -127,7 +127,7 @@ public class SistemaGestao {
     }
 
     public static void editaAtivo(){
-        System.out.println("Exibindo os ativos cadastrados..."); //do tipo x especifico do ativo que vc quer editar
+        System.out.println("Exibindo os ativos cadastrados..."); 
         int num = ControleUsuario.lerTipoAtivo() - 1;
         exibirAtivos(num);
 
@@ -197,15 +197,15 @@ public class SistemaGestao {
             if (statusNome == 0) break;
             ControleUsuario.exibirMensagemErroValidador(statusNome); // Exibe erro -11
         }
-        //validação da entrada do documento:
-        String docRaw; // Declarada aqui para ser usada no loop
+         
+        String docRaw;  
         int statusDoc;
         while (true) {
             docRaw = ControleUsuario.lerDocumento();
             statusDoc = Validador.validarDocumento(docRaw);
 
             if (statusDoc == 0) {
-            // Se o formato estiver ok, agora conferimos a duplicidade
+             
             String docLimpoTemp = Validador.limparDocumento(docRaw);
             if (buscarInvestidor(docLimpoTemp) != null) {
                 ControleUsuario.exibirMensagemErroValidador(-6);
@@ -272,10 +272,10 @@ public class SistemaGestao {
     }
 
     
-    //Regra de Negócio: Verifica se o investidor logado tem permissão para o ativo.
+    
     
     public static boolean validarPermissaoInvestimento(Ativo ativo) {
-        if (investidorLogado instanceof Institucional) return true; // Institucional pode tudo [cite: 207]
+        if (investidorLogado instanceof Institucional) return true; // Institucional pode tudo
         
         PessoaFisica pf = (PessoaFisica) investidorLogado;
         String perfil = pf.getPerfil();
@@ -310,7 +310,7 @@ public class SistemaGestao {
         }
 
         try {
-            // vai fazer todo o trabalho de criar o StringBuilder e o Arquivo
+             
             resources.ExportadorRelatorio.gerarArquivoJson(investidorLogado);
 
             String nomeArquivo = "relatorio_" + investidorLogado.getDocumento() + ".json";
@@ -323,7 +323,7 @@ public class SistemaGestao {
         
     }
 
-    //se der passar para a parte de textos para a view
+     
     public static void editarInfoInvestidor() {
         investidorLogado.setNome(ControleUsuario.lerNome());
         
@@ -412,7 +412,7 @@ public class SistemaGestao {
                     try {
                         double qtd = Double.parseDouble(d[2].replace(",", "."));
                         double preco = Double.parseDouble(d[3].replace(",", "."));
-                        String instituicao = d[4]; // <--- Ler do CSV
+                        String instituicao = d[4];  
                         
                         if (d[1].equalsIgnoreCase("Compra")) {
                             investidorLogado.comprarAtivo(a, qtd, preco, instituicao);
@@ -422,7 +422,7 @@ public class SistemaGestao {
                             if (sucesso) processados++;
                         }
                     } catch (NumberFormatException e) {
-                       // Ignora linhas inválidas
+                      
                     }
                 }
             }

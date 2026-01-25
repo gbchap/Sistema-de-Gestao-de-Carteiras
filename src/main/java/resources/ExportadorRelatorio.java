@@ -15,7 +15,6 @@ public class ExportadorRelatorio {
     public static void gerarArquivoJson(Investidor inv) throws IOException {
         String nomeArquivo = "relatorio_" + inv.getDocumento() + ".json";
 
-        // Força o uso de ponto como separador decimal (Locale.US) para evitar problemas no JSON
         try (PrintWriter out = new PrintWriter(new FileWriter(nomeArquivo))) {
             StringBuilder sb = new StringBuilder();
             sb.append("{\n");
@@ -36,22 +35,19 @@ public class ExportadorRelatorio {
                 sb.append("  \"razaoSocial\": \"").append(inst.getRazaoSocial()).append("\",\n");
             }
 
-            // --- CÁLCULOS FINANCEIROS (Novos Requisitos) ---
+            // --- CÁLCULOS FINANCEIROS ---
             double valorTotalAtual = inv.getCarteira().getValorTotalEmReais();
-            
-            // Cálculo do Valor Total Gasto (Iterando sobre os itens)
+ 
             double valorTotalGasto = 0;
             for (ItemCarteira item : inv.getCarteira().getItens()) {
                 valorTotalGasto += item.getQuantidade() * item.getPrecoMedio();
             }
-
-            // Obtendo as porcentagens da classe Carteira
+            
             double pctRendaFixa = inv.getCarteira().getPercentualRendaFixa();
             double pctRendaVariavel = inv.getCarteira().getPercentualRendaVariavel();
             double pctNacional = inv.getCarteira().getPercentualNacional();
             double pctInternacional = inv.getCarteira().getPercentualInternacional();
 
-            // Adicionando ao JSON
             sb.append(String.format(Locale.US, "  \"valorTotalGasto\": %.2f,\n", valorTotalGasto));
             sb.append(String.format(Locale.US, "  \"valorTotalAtual\": %.2f,\n", valorTotalAtual));
             

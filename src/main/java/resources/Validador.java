@@ -41,40 +41,37 @@ public class Validador {
         }
         String limpo = limparDocumento(doc);
         if (limpo.matches("(\\d)\\1{10,13}")) {
-                return -7; // para "Documento com dígitos repetidos/falso"
+                return -7; 
             }
         if (limpo.length() < 11) return -2;
         if (limpo.length() > 11 && limpo.length() < 14) return -3;
         if (limpo.length() > 14) return -4;
 
-        return 0; // quando da bom
+        return 0; 
     }
 
     public static boolean isCPF(String doc) {
         return limparDocumento(doc).length() == 11;
     }
     public static int validarTelefone(String tel) {
-        if (tel == null || tel.trim().isEmpty()) return -1; // Vazio
+        if (tel == null || tel.trim().isEmpty()) return -1; 
         
         // Regex: Aceita apenas números (de 10 a 11 dígitos)
         if (!tel.matches("\\d{10,11}")) {
-            return -50; //
+            return -50; 
         }
         return 0;
     }
 
-    // Atualizar o validarTexto para ser mais rigoroso com o endereço
     public static int validarEndereco(String endereco) {
         if (endereco == null || endereco.trim().isEmpty()) return -10;
-        if (endereco.length() < 15) return -51; // Endereço muito curto para ser "completo"
+        if (endereco.length() < 15) return -51; 
         return 0;
     }
     
 
     // --- VALIDAÇÃO DE NOMES / TEXTOS ---
-    /**
-     * Erros: 0 (Ok), -10 (Vazio ou apenas espaços), -11 (Muito curto)
-     */
+ 
     public static int validarTexto(String texto) {
         if (texto == null || texto.trim().isEmpty()) return -10;
         if (texto.trim().length() < 3) return -11; // Nomes com menos de 3 letras
@@ -82,31 +79,27 @@ public class Validador {
     }
 
     // --- VALIDAÇÃO DE VALORES MONETÁRIOS (Patrimônio, Preço, etc) ---
-    /**
-     * Erros: 0 (Ok), -20 (Valor negativo ou zero)
-     */
+
     public static int validarValorPositivo(double valor) {
         if (valor <= 0) return -20;
         return 0;
     }
 
     // --- VALIDAÇÃO DE OPÇÕES DE MENU ---
-    /**
-     * Erros: 0 (Ok), -30 (Opção fora do intervalo permitido)
-     */
+
     public static int validarOpcaoMenu(int opcao, int min, int max) {
         if (opcao < min || opcao > max) return -30;
         return 0;
     }
     /// --- VALIDAÇÃO da entrada para cadastro de Ativos ---
     public static int validarPreco(double preco) {
-        if (preco < 0) return -20; // Código para valor negativo
+        if (preco < 0) return -20; 
         return 0;
     }
 
     public static int validarTicker(String ticker) {
-        if (ticker == null || ticker.trim().length() < 3) return -31; // Ticker muito curto
-        if (!ticker.matches("[A-Z0-9]+")) return -32; // Ticker deve ser alfanumérico
+        if (ticker == null || ticker.trim().length() < 3) return -31; 
+        if (!ticker.matches("[A-Z0-9]+")) return -32;
         return 0;
     }
 
