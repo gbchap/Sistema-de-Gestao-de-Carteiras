@@ -69,21 +69,28 @@ public class SistemaGestao {
 
     }
 
-public static void excluiAtivo() {
-    String ticker = ControleUsuario.lerTicker();
-    Ativo alvo = buscarAtivoPorTicker(ticker);
 
-    if (alvo != null) {
-        bancoDeAtivos.remove(alvo);
-        // PROPAGAÇÃO: Remove das carteiras de todos os investidores 
-        for (Investidor inv : listaInvestidores) {
-            inv.getCarteira().removerAtivoPorTicker(ticker);
+    public static void excluiAtivo() {
+        String ticker = ControleUsuario.lerTicker();
+        Ativo alvo = null;
+        
+        for (Ativo a : bancoDeAtivos) {
+            if (a.getTicker().equalsIgnoreCase(ticker)) {
+                alvo = a;
+                break;
+            }
         }
-        ControleUsuario.exibirSucesso("Ativo removido do sistema e de todas as carteiras.");
-    } else {
-        ControleUsuario.exibirErroCustomizado("Ativo não encontrado.");
+        if (alvo != null) {
+            bancoDeAtivos.remove(alvo);
+            for (Investidor inv : listaInvestidores) {
+                inv.getCarteira().removerAtivoPorTicker(ticker);
+            }
+            
+            ControleUsuario.exibirSucesso("Ativo removido do sistema e de todas as carteiras com sucesso.");
+        } else {
+            ControleUsuario.exibirErroCustomizado("Ativo com ticker " + ticker + " não encontrado.");
+        }
     }
-}
     
 
     //###############################  MENU INVESTIDOR ################################### 

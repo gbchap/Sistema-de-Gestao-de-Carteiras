@@ -65,7 +65,7 @@ public Investidor(String nome, String documento, String telefone, String dataNas
     public boolean isQualificado() {
         return this.patrimonioTotal >= 1000000.0;
     }
-   public void comprarAtivo(Ativo ativo, double quantidade, double preco) {
+public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao) {
     ItemCarteira itemExistente = null;
     for (ItemCarteira item : carteira.getItens()) {
         if (item.getAtivo().getTicker().equalsIgnoreCase(ativo.getTicker())) {
@@ -75,34 +75,36 @@ public Investidor(String nome, String documento, String telefone, String dataNas
     }
 
     if (itemExistente != null) {
-        // Cálculo de Preço Médio: (QtdAntiga * PMAntigo + QtdNova * PrecoNovo) / QtdTotal
-        double totalGastoAntigo = itemExistente.getQuantidade() * itemExistente.getPrecoMedio();
-        double novoTotalGasto = totalGastoAntigo + (quantidade * preco);
+        // Lógica de Preço Médio: (Qtd Atual * PM Atual + Nova Qtd * Novo Preço) / Qtd Total
+        double custoTotalAntigo = itemExistente.getQuantidade() * itemExistente.getPrecoMedio();
+        double novoCusto = quantidade * precoExecucao;
         double novaQuantidade = itemExistente.getQuantidade() + quantidade;
         
         itemExistente.setQuantidade(novaQuantidade);
-        itemExistente.setPrecoMedio(novoTotalGasto / novaQuantidade);
+        itemExistente.setPrecoMedio((custoTotalAntigo + novoCusto) / novaQuantidade);
     } else {
-        carteira.adicionarItem(new ItemCarteira(ativo, quantidade, preco));
+        // Se não tinha o ativo, adiciona um novo Item na carteira
+        carteira.adicionarItem(new ItemCarteira(ativo, quantidade, precoExecucao));
     }
     
-    this.historico.add(new Movimentacao("C" + System.currentTimeMillis(), ativo, quantidade, preco, "Compra"));
+    // Registra no histórico
+    this.historico.add(new Movimentacao("C"+System.currentTimeMillis(), ativo, quantidade, precoExecucao, "Compra"));
 }
 
 public boolean venderAtivo(String ticker, double quantidade) {
     for (ItemCarteira item : carteira.getItens()) {
         if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
-            // REGRA: Vendas não podem exceder a quantidade disponível [cite: 204]
+            // TRAVA DE SEGURANÇA: Não vende o que não tem
             if (item.getQuantidade() >= quantidade) {
                 item.setQuantidade(item.getQuantidade() - quantidade);
                 
-                // Se zerar, remove da carteira
+                // Se zerar a posição, removemos o item da carteira
                 if (item.getQuantidade() <= 0) {
                     carteira.getItens().remove(item);
                 }
                 
-                this.historico.add(new Movimentacao("V" + System.currentTimeMillis(), 
-                                    item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda"));
+                this.historico.add(new Movimentacao("V"+System.currentTimeMillis(), 
+                        item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda"));
                 return true;
             }
         }
