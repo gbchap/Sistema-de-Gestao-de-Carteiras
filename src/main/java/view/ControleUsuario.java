@@ -226,6 +226,7 @@ public class ControleUsuario {
             case -30: mensagem = "Opção inválida! Escolha uma opção do menu."; break;
             case -40: mensagem = "Data inválida. Use o formato dd/mm/aaaa."; break;
             case -41: mensagem = "A data de nascimento não pode ser no futuro."; break;
+            case -50: mensagem = "Telefone inválido! Digite apenas números com DDD (ex: 32988887777)."; break;
             
             default: mensagem = "Erro de entrada de dados."; break;
         }
@@ -293,7 +294,8 @@ public class ControleUsuario {
         System.out.println("=".repeat(65));
     }
     public static String lerTelefone() {
-        return lerTextoValidado("Digite o telefone (ex: 32999999999): ");
+        System.out.print("Digite o novo telefone (apenas números): ");
+        return scanner.nextLine();
     }
 
     public static String lerDataNascimento() {

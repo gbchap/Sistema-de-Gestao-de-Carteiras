@@ -132,18 +132,19 @@ public class SistemaGestao {
     }
 
     public static void cadastrarInvestidorLote() {
-        // ussar primeiro um caminho fixo para teste, depois pedir para o usuario inserir
         String caminho = "resources/Arquivoscsv/investidores.csv"; 
-        
         List<Investidor> novos = CarregarCSV.lerInvestidores(caminho);
-        
-        if (!novos.isEmpty()) {
-            listaInvestidores.addAll(novos);
-            ControleUsuario.exibirMensagemCarga(novos.size());
-        } else {
-            ControleUsuario.exibirErroCustomizado("Nao foi possivel carregar o lote de investidores.");
+        int cont = 0;
+
+        for (Investidor novo : novos) {
+            // SÓ ADICIONA SE NÃO EXISTIR NA LISTA ATUAL
+            if (buscarInvestidor(novo.getDocumento()) == null) {
+                listaInvestidores.add(novo);
+                cont++;
+            }
         }
-    } 
+        ControleUsuario.exibirMensagemCarga(cont);
+    }
     public static void excluirInvestidores(){
 
     }
@@ -265,35 +266,105 @@ public class SistemaGestao {
         }
         
     }
-    public static void editarInfoInvestidor(){
+    //se der passar para a parte de textos para a view
+    public static void editarInfoInvestidor() {
+        // Note que não usamos System.out aqui, delegamos para a View
+        investidorLogado.setNome(ControleUsuario.lerNome());
         
-    }
-    public static void excluirInvestidor(){
-
-    }
-    public static void exibirAtivosInvestidor(){
-
-    }
-    public static void exibirValorTotalGasto(){
-
-    }
-    public static void exibirValorTotalAtual(){
-
-    }
-    public static void porcentRendas(){
-
-    }
-    public static void porcentProdutos(){
-
+        // Usando os novos métodos que criamos na ControleUsuario
+        String novoTel = ControleUsuario.lerTelefone();
+        String novoEnd = ControleUsuario.lerEndereco();
+        double novoPatri = ControleUsuario.lerPrecoAtual();
+        
+        // Agora os métodos set não darão mais erro
+        investidorLogado.setTelefone(novoTel);
+        investidorLogado.setEndereco(novoEnd);
+        investidorLogado.setPatrimonioTotal(novoPatri);
+        
+        ControleUsuario.exibirSucesso("Dados atualizados com sucesso!");
     }
 
-    public static void adicionarMovCompra(){
-
+    public static void excluirInvestidor() {
+        listaInvestidores.remove(investidorLogado);
+        investidorLogado = null; // "Desloga"
+        ControleUsuario.exibirSucesso("Investidor e sua carteira foram removidos do sistema.");
     }
-    public static void adicionarMovVenda(){
-
+    public static void exibirAtivosInvestidor() {
+        var itens = investidorLogado.getCarteira().getItens();
+        if (itens.isEmpty()) {
+            ControleUsuario.exibirErroCustomizado("A carteira está vazia.");
+            return;
+        }
+        ControleUsuario.exibirTabelaItensCarteira(investidorLogado.getNome(), itens);
     }
-    public static void adicionarLoteMov(){
+
+    public static void exibirValorTotalGasto() {
+        double total = 0;
+        for (var item : investidorLogado.getCarteira().getItens()) {
+            total += item.getQuantidade() * item.getPrecoMedio();
+        }
+        System.out.printf("\n[RELATÓRIO]: Valor Total Gasto: R$ %.2f\n", total);
+    }
+
+    public static void exibirValorTotalAtual() {
+        double total = investidorLogado.getCarteira().getValorTotalEmReais();
+        System.out.printf("\n[RELATÓRIO]: Valor Total Atual (Patrimônio em Ativos): R$ %.2f\n", total);
+    }   
+
+    public static void porcentRendas() {
+        double rf = investidorLogado.getCarteira().getPercentualRendaFixa();
+        double rv = investidorLogado.getCarteira().getPercentualRendaVariavel();
+        System.out.printf("\nAlocação: Renda Fixa: %.2f%% | Renda Variável: %.2f%%\n", rf, rv);
+    }
+
+    public static void porcentProdutos() {
+        double nac = investidorLogado.getCarteira().getPercentualNacional();
+        double inter = investidorLogado.getCarteira().getPercentualInternacional();
+        System.out.printf("\nGeografia: Nacional: %.2f%% | Internacional: %.2f%%\n", nac, inter);
+    }
+
+    public static void adicionarMovCompra() {
+        String ticker = ControleUsuario.lerTicker();
+        
+        // 1. Busca o ativo no banco global
+        Ativo ativoAlvo = null;
+        for (Ativo a : bancoDeAtivos) {
+            if (a.getTicker().equalsIgnoreCase(ticker)) {
+                ativoAlvo = a;
+                break;
+            }
+        }
+
+        if (ativoAlvo == null) {
+            ControleUsuario.exibirErroCustomizado("Ativo não encontrado no sistema.");
+            return;
+        }
+
+        // 2. Valida Permissão (Perfil e Qualificado) [cite: 196-200]
+        if (!validarPermissaoInvestimento(ativoAlvo)) return;
+
+        // 3. Executa a compra
+        double qtd = ControleUsuario.lerQuantidade();
+        double preco = ativoAlvo.getPrecoAtual(); // Ou pedir o preço de execução manual
+        
+        investidorLogado.comprarAtivo(ativoAlvo, qtd, preco);
+        ControleUsuario.exibirSucesso("Compra de " + ticker + " realizada com sucesso!");
+    }
+
+        public static void adicionarMovVenda() {
+            String ticker = ControleUsuario.lerTicker();
+            double qtd = ControleUsuario.lerQuantidade();
+
+            // Valida se tem o ativo e quantidade suficiente 
+            boolean sucesso = investidorLogado.venderAtivo(ticker, qtd);
+            
+            if (sucesso) {
+                ControleUsuario.exibirSucesso("Venda realizada!");
+            } else {
+                ControleUsuario.exibirErroCustomizado("Quantidade insuficiente ou ativo não possuído.");
+            }
+        }
+        public static void adicionarLoteMov(){
 
     }
 }

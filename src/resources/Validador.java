@@ -54,10 +54,12 @@ public class Validador {
         return limparDocumento(doc).length() == 11;
     }
     public static int validarTelefone(String tel) {
-        if (tel == null || tel.trim().isEmpty()) return -1;
-        // Aceita apenas números, entre 10 e 11 dígitos (DDD + número)
-        String limpo = tel.replaceAll("[^0-9]", "");
-        if (limpo.length() < 10 || limpo.length() > 11) return -50; // Novo código de erro
+        if (tel == null || tel.trim().isEmpty()) return -1; // Vazio
+        
+        // Regex: Aceita apenas números (de 10 a 11 dígitos)
+        if (!tel.matches("\\d{10,11}")) {
+            return -50; //
+        }
         return 0;
     }
 

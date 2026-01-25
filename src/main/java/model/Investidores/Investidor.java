@@ -42,7 +42,20 @@ public Investidor(String nome, String documento, String telefone, String dataNas
     public String getTelefone() { return telefone; }
     public String getDataNascimento() { return dataNascimento; }
     public String getEndereco() { return endereco; }
-    
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+
+
     public void setPatrimonioTotal(double patrimonio) {
         if (patrimonio < 0) throw new IllegalArgumentException("Patrimônio não pode ser negativo.");
         this.patrimonioTotal = patrimonio;

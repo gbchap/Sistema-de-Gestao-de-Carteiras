@@ -13,3 +13,5 @@ gabi! é isso que ainda falta para os ativos
 2 - Cadastrar ativo em lote
 3 - Editar ativo
 4 - Excluir ativo
+
+° validar campo de TELEFONE no cadastro do investidor
