@@ -6,7 +6,7 @@ import model.TipoAtivo;
 public class Stock extends Ativo implements TipoAtivo {
     private String bolsa;
     private String setor;
-    private double fatorConversao; // Ex: 5.39 PARA DOLAR
+    private double fatorConversao; // 5.39 PARA DOLAR
 
     public Stock(String nome, String ticker, double precoAtualMoedaOriginal, boolean qualificado, 
                  String bolsa, String setor, double fatorConversao) {

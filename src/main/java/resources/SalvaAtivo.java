@@ -3,14 +3,12 @@ package resources;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
-import model.Ativos.Ativo; // Certifica-te que o caminho do Ativo está correto
+import model.Ativos.Ativo;
 
 public class SalvaAtivo {
-    // Ajusta o caminho para a tua pasta de CSVs
     private static final String PATH = "resources/Arquivoscsv/";
 
     public static void gravarNovoAtivo(Ativo ativo) throws IOException {
-        // Seleciona o ficheiro correto baseado no tipo da classe
         String nomeFicheiro = switch (ativo.getClass().getSimpleName()) {
             case "Acao" -> "acao.csv";
             case "FII" -> "fii.csv";

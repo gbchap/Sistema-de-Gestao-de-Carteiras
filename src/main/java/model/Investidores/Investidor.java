@@ -31,7 +31,6 @@ public Investidor(String nome, String documento, String telefone, String dataNas
 
     public void cadastrarInvestimento(Movimentacao m) {
         this.historico.add(m);
-        // TODO - Atualizar a carteira conforme a movimentação
     }
 
     // getters e setters
@@ -83,18 +82,18 @@ public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao, S
         itemExistente.setQuantidade(novaQuantidade);
         itemExistente.setPrecoMedio((custoTotalAntigo + novoCusto) / novaQuantidade);
     } else {
-        // Se não tinha o ativo, adiciona um novo Item na carteira
+        // ai se não tinha o ativo, adiciona um novo Item na carteira
         carteira.adicionarItem(new ItemCarteira(ativo, quantidade, precoExecucao));
     }
     
-    // Registra no histórico
+    // salva no histórico
     this.historico.add(new Movimentacao("C"+System.currentTimeMillis(), ativo, quantidade, precoExecucao, "Compra", instituicao));
 }
 
 public boolean venderAtivo(String ticker, double quantidade, String instituicao) {
     for (ItemCarteira item : carteira.getItens()) {
         if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
-            // TRAVA DE SEGURANÇA: Não vende o que não temx'
+            // TRAVA DE SEGURANÇA: Não vende o que não tem
             if (item.getQuantidade() >= quantidade) {
                 item.setQuantidade(item.getQuantidade() - quantidade);
                 

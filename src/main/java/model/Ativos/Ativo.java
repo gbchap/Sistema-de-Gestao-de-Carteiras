@@ -2,10 +2,7 @@ package model.Ativos;
 
 import view.ControleUsuario;
 
-/**
- * Classe abstrata que representa a base de qualquer ativo financeiro.
- * Não pode ser instanciada diretamente.
- */
+
 public abstract class Ativo {
     private String nome;
     private String ticker;
@@ -78,10 +75,7 @@ public abstract class Ativo {
         this.qualificado = qualificado;
     }
 
-    
-    //Método abstrato para identificar se o ativo é de Renda Fixa ou Variável.
-    //Deve ser implementado pelas subclasses
-    
+
     public abstract String getTipoRenda();
 
     @Override

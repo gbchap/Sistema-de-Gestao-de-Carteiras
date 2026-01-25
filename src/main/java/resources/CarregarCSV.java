@@ -16,16 +16,12 @@ import model.Investidores.Investidor;
 
 public class CarregarCSV {
 
-    // Ajusta este caminho conforme a estrutura do nosso VS Code
+    // Ajusta este caminho conforme a estrutura 
     private static final String BASE_PATH = "Arquivoscsv/";
-    /**
-     * Método mestre que centraliza a carga de todos os ficheiros.
-     * É este método que o SistemaGestao chama no início.
-     */
+    
     public static List<Ativo> carregarTodosAtivos() {
         List<Ativo> listaCompleta = new ArrayList<>();
 
-        // Adiciona os ativos de cada categoria à lista principal
         listaCompleta.addAll(lerAcoes(BASE_PATH + "acao.csv"));
         listaCompleta.addAll(lerFIIs(BASE_PATH + "fii.csv"));
         listaCompleta.addAll(lerCriptos(BASE_PATH + "criptoativo.csv"));
@@ -71,7 +67,7 @@ public class CarregarCSV {
                     String precoTratado = d[3].replace(".", "").replace(",", ".");
                     double preco = Double.parseDouble(precoTratado);
 
-                    // Repetir o tratamento para dividendos e taxas por segurança
+                    // repetir o tratamento para dividendos e taxas por segurança
                     double dividendo = Double.parseDouble(d[4].replace(".", "").replace(",", "."));
                     double taxa = Double.parseDouble(d[5].replace(".", "").replace(",", "."));
 

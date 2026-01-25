@@ -1,12 +1,27 @@
 {
-  "nome": "dyanna",
+  "nome": "Joao Silva",
   "documento": "12345678901",
-  "telefone": "regth",
-  "dataNascimento": "01/08/2003",
-  "endereco": "rua edna amorim rabelo, shagrila 36680000,num 80",
-  "patrimonioTotal": 7000.0,
+  "telefone": "32988887777",
+  "dataNascimento": "10/05/1990",
+  "endereco": "Rua das Flores, 123, Centro, JF, MG",
+  "patrimonioTotalDeclarado": 50000.00,
   "tipo": "Pessoa Física",
   "perfil": "Arrojado",
+  "valorTotalGasto": 1103.02,
+  "valorTotalAtual": 5945.30,
+  "alocacao": {
+    "rendaFixa": 0.00,
+    "rendaVariavel": 100.00
+  },
+  "geografia": {
+    "nacional": 0.00,
+    "internacional": 100.00
+  },
   "carteira": [
+    {
+      "ticker": "LINK",
+      "quantidade": 80.0000,
+      "precoMedio": 13.79
+    }
   ]
 }

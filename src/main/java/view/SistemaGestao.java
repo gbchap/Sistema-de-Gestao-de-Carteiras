@@ -154,7 +154,7 @@ public class SistemaGestao {
                 ativo.setNome(novoNome);
             case 2:
                 String novoTicker = ControleUsuario.lerTicker();
-                ativo.setTicker(novoTicker); //nenhum desses tem verificação pois elas ja tao nos setters
+                ativo.setTicker(novoTicker);
             case 3:
                 double novoPreco = ControleUsuario.lerPrecoAtual();
                 ativo.setPrecoAtual(novoPreco);
@@ -205,7 +205,7 @@ public class SistemaGestao {
             statusDoc = Validador.validarDocumento(docRaw);
 
             if (statusDoc == 0) {
-            // Se o formato estiver ok, agora conferimos a duplicidade (To-Do -6)
+            // Se o formato estiver ok, agora conferimos a duplicidade
             String docLimpoTemp = Validador.limparDocumento(docRaw);
             if (buscarInvestidor(docLimpoTemp) != null) {
                 ControleUsuario.exibirMensagemErroValidador(-6);
@@ -304,21 +304,17 @@ public class SistemaGestao {
     //###############################  MENU INVESTIDOR SELECIONADO ################################### 
 
     public static void salvarRelatorio() {
-        // 1. Verifica se tem alguém selecionado
         if (investidorLogado == null) {
             ControleUsuario.exibirErroCustomizado("Selecione um investidor primeiro!");
             return;
         }
 
         try {
-            // 2. AQUI chamamos o ExportadorRelatorio que você criou!
-            // Ele vai fazer todo o trabalho de criar o StringBuilder e o Arquivo
+            // vai fazer todo o trabalho de criar o StringBuilder e o Arquivo
             resources.ExportadorRelatorio.gerarArquivoJson(investidorLogado);
 
-            // 3. Pegamos o nome do arquivo para avisar o usuário
             String nomeArquivo = "relatorio_" + investidorLogado.getDocumento() + ".json";
             
-            // 4. Avisamos na tela (isso é o que faltava para você ver algo acontecer)
             ControleUsuario.exibirSucessoExportacao(nomeArquivo);
 
         } catch (java.io.IOException e) {
@@ -329,15 +325,12 @@ public class SistemaGestao {
 
     //se der passar para a parte de textos para a view
     public static void editarInfoInvestidor() {
-        // Note que não usamos System.out aqui, delegamos para a View
         investidorLogado.setNome(ControleUsuario.lerNome());
         
-        // Usando os novos métodos que criamos na ControleUsuario
         String novoTel = ControleUsuario.lerTelefone();
         String novoEnd = ControleUsuario.lerEndereco();
         double novoPatri = ControleUsuario.lerPrecoAtual();
         
-        // Agora os métodos set não darão mais erro
         investidorLogado.setTelefone(novoTel);
         investidorLogado.setEndereco(novoEnd);
         investidorLogado.setPatrimonioTotal(novoPatri);
@@ -351,7 +344,6 @@ public class SistemaGestao {
         ControleUsuario.exibirSucesso("Investidor e sua carteira foram removidos.");
     }
 
-    // Item 3 - Exibir ativos do investidor [cite: 129]
     public static void exibirAtivosInvestidor() {
         List<ItemCarteira> itens = investidorLogado.getCarteira().getItens();
         if (itens.isEmpty()) {
@@ -411,7 +403,7 @@ public class SistemaGestao {
             while ((linha = br.readLine()) != null) {
                 String[] d = linha.split(";");
                 
-                // Agora esperamos 5 colunas: Ticker;Tipo;Qtd;Preco;Instituicao
+                //esperamos 5 colunas: Ticker;Tipo;Qtd;Preco;Instituicao
                 if (d.length < 5) continue; 
 
                 Ativo a = buscarAtivoPorTicker(d[0]);
@@ -465,7 +457,7 @@ public class SistemaGestao {
     }
 
     public static void excluirInvestidores() {
-        String listaDocs = ControleUsuario.lerListaDocumentos(); // Crie este método na View para ler a String
+        String listaDocs = ControleUsuario.lerListaDocumentos();
         String[] docs = listaDocs.split(",");
         int removidos = 0;
 

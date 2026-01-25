@@ -46,7 +46,7 @@ public class ControleUsuario {
 
     public static void exibirMenuInvestidores() {
         System.out.println("\n--- MENU INVESTIDORES ---");
-        System.out.println("1 - Cadastrar investidor"); //exibirmenuinvestidorselecionado()
+        System.out.println("1 - Cadastrar investidor");
         System.out.println("2 - Cadastrar investidor em lote");
         System.out.println("3 - Exibir todos investidores");
         System.out.println("4 - Excluir investidores (lista de CPFs/CNPJs)");
@@ -129,7 +129,7 @@ public class ControleUsuario {
                 double valor = Double.parseDouble(entrada.replace(",", "."));
                 if (valor >= 0) return valor;
                 
-                exibirMensagemErroValidador(-20); // Código que criamos: "Valor deve ser > 0"
+                exibirMensagemErroValidador(-20);
             } catch (NumberFormatException e) {
                 System.err.println("[ERRO]: Digite um valor numérico (ex: 1500.50)");
             }
@@ -231,7 +231,6 @@ public class ControleUsuario {
             default: mensagem = "Erro de entrada de dados."; break;
         }
 
-        // Montagem 1da msg
         if (incluirRegraDoc) {
             System.err.println("\n[ERRO]: " + mensagem + REGRA_DOC);
         } else {
@@ -281,7 +280,6 @@ public class ControleUsuario {
         System.out.println("-".repeat(65));
 
         for (var item : itens) {
-            // A View apenas exibe. Os cálculos de conversão já devem vir do Model
             double valorGasto = item.getQuantidade() * item.getPrecoMedio();
             double valorAtual = item.getQuantidade() * item.getAtivo().getPrecoEmReais();
 
