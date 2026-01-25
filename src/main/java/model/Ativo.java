@@ -1,4 +1,7 @@
 package model;
+
+import view.ControleUsuario;
+
 /**
  * Classe abstrata que representa a base de qualquer ativo financeiro.
  * Não pode ser instanciada diretamente.
@@ -31,19 +34,30 @@ public abstract class Ativo {
 
     public void setNome(String nome) {
         this.nome = nome;
+        if(nome != null && !nome.isEmpty()){
+            this.nome = nome;
+        } else {
+            ControleUsuario.exibirErroCustomizado("Nome inválido.");
+        }
     }
 
     public String getTicker() {
         return ticker;
     }
 
+    public void setTicker(String ticker){
+        if(ticker != null && !ticker.isEmpty()){
+            this.ticker = ticker;
+        } else {
+            ControleUsuario.exibirErroCustomizado("Ticker inválido.");
+        }
+    }
+
     public double getPrecoAtual() {
         return precoAtual;
     }
 
-    /**
-     * Altera o preço do ativo, garantindo que não seja negativo
-     */
+
     public void setPrecoAtual(double precoAtual) {
         if (precoAtual < 0) {
             throw new IllegalArgumentException("Preço não pode ser negativo.");
@@ -56,6 +70,9 @@ public abstract class Ativo {
     }
 
     public void setQualificado(boolean qualificado) {
+        if(qualificado != true && qualificado != false){
+            ControleUsuario.exibirErroCustomizado("Valor inválido para qualificado.");
+        }
         this.qualificado = qualificado;
     }
 
