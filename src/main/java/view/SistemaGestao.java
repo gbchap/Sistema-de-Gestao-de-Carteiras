@@ -95,30 +95,38 @@ public class SistemaGestao {
     }
 
     public static void cadastrarAtivoLote(){
+        java.util.Scanner sc = new java.util.Scanner(System.in);
         System.out.print("Digite o caminho do arquivo (ex: resources/Arquivoscsv/ativos.csv): ");
-        String caminho;
-        try (java.util.Scanner scanner = new java.util.Scanner(System.in)) {
-            caminho = scanner.nextLine();
-        }
+        String caminho = sc.nextLine();
 
-        switch(ControleUsuario.lerTipoAtivo()){
-            case 1: bancoDeAtivos.addAll(CarregarCSV.lerAcoes(caminho)); break;
-            case 2: bancoDeAtivos.addAll(CarregarCSV.lerFIIs(caminho)); break;
-            case 3: bancoDeAtivos.addAll(CarregarCSV.lerCriptos(caminho)); break;
-            case 4: bancoDeAtivos.addAll(CarregarCSV.lerStocks(caminho)); break;
-            case 5: bancoDeAtivos.addAll(CarregarCSV.lerTesouro(caminho)); break;
-            default: ControleUsuario.exibirErroCustomizado("Tipo de ativo inválido para carga em lote."); return;
-        }
-        List<Ativo> novos = CarregarCSV.carregarTodosAtivos();
-        int adicionados = 0;
+        int tipo = ControleUsuario.lerTipoAtivo();
 
-        for (Ativo novo : novos) {
-            if (buscarAtivoPorTicker(novo.getTicker()) == null) {
-                bancoDeAtivos.add(novo);
-                adicionados++;
+        List<? extends Ativo> novos; 
+
+        switch(tipo){
+            case 1 -> novos = CarregarCSV.lerAcoes(caminho);
+            case 2 -> novos = CarregarCSV.lerFIIs(caminho);
+            case 3 -> novos = CarregarCSV.lerCriptos(caminho);
+            case 4 -> novos = CarregarCSV.lerStocks(caminho);
+            case 5 -> novos = CarregarCSV.lerTesouro(caminho);
+            default->{
+                ControleUsuario.exibirErroCustomizado("Tipo inválido para carga em lote.");
+                return;
             }
         }
-            ControleUsuario.exibirMensagemCarga(adicionados);
+
+        int adicionados = 0;
+
+        if (novos != null) {
+            for (Ativo novoAtivo : novos) {
+                if (buscarAtivoPorTicker(novoAtivo.getTicker()) == null) {
+                bancoDeAtivos.add(novoAtivo);
+                adicionados++;
+                }
+            }
+        }
+
+        ControleUsuario.exibirMensagemCarga(adicionados);
     }
 
     public static void editaAtivo(){
@@ -493,6 +501,6 @@ public class SistemaGestao {
                 adicionados++;
             }
         }
-            ControleUsuario.exibirMensagemCarga(adicionados);
-        }
+        ControleUsuario.exibirMensagemCarga(adicionados);
+    }
 }
