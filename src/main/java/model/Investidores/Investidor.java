@@ -12,12 +12,18 @@ public abstract class Investidor {
     private String nome;
     private String documento; // para o CPF ou CNPJ 
     private double patrimonioTotal; // Em Real [tipo : 113]
+    private String telefone;        
+    private String dataNascimento;  
+    private String endereco;       
     protected Carteira carteira;
     protected List<Movimentacao> historico;
 
-    public Investidor(String nome, String documento, double patrimonioTotal) {
+public Investidor(String nome, String documento, String telefone, String dataNascimento, String endereco, double patrimonioTotal) {
         this.nome = nome;
         this.documento = documento;
+        this.telefone = telefone;
+        this.dataNascimento = dataNascimento;
+        this.endereco = endereco;
         this.patrimonioTotal = patrimonioTotal;
         this.carteira = new Carteira();
         this.historico = new ArrayList<>();
@@ -33,6 +39,9 @@ public abstract class Investidor {
     public String getDocumento() { return documento; }
     public double getPatrimonioTotal() { return patrimonioTotal; }
     public Carteira getCarteira() { return carteira; }
+    public String getTelefone() { return telefone; }
+    public String getDataNascimento() { return dataNascimento; }
+    public String getEndereco() { return endereco; }
     
     public void setPatrimonioTotal(double patrimonio) {
         if (patrimonio < 0) throw new IllegalArgumentException("Patrimônio não pode ser negativo.");

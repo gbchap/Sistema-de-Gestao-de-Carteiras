@@ -149,23 +149,29 @@ public class CarregarCSV {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] d = linha.split(";");
+                
+                if (d.length < 8) {
+                    System.err.println("[ERRO LOTE]: Linha ignorada por falta de dados: " + linha);
+                    continue;
+                }
+
                 String nome = d[0];
                 String doc = d[1];
-                double patri = Double.parseDouble(d[2]);
-                String tipo = d[3]; // PF ou PJ
-                String extra = d[4]; // Perfil ou Razão Social
-
+                String tel = d[2];
+                String nasc = d[3];
+                String endereco = d[4];
+                double patri = Double.parseDouble(d[5]);
+                String tipo = d[6]; // PF ou PJ
+                String extra = d[7]; // Perfil ou Razão Social
                 if (tipo.equalsIgnoreCase("PF")) {
-                    lista.add(new model.Investidores.PessoaFisica(nome, doc, patri, extra));
+                    lista.add(new model.Investidores.PessoaFisica(nome, doc, tel, nasc, endereco, patri, extra));
                 } else {
-                    lista.add(new model.Investidores.Institucional(nome, doc, patri, extra));
+                    lista.add(new model.Investidores.Institucional(nome, doc, tel, nasc, endereco, patri, extra));
                 }
             }
         } catch (IOException e) {
-            System.err.println("Erro ao ler investidores: " + e.getMessage());
+        System.err.println("Erro ao ler investidores: " + e.getMessage());
         }
         return lista;
-
-        
     }
 }

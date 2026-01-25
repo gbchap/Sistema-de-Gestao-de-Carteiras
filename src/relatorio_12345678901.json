@@ -1,0 +1,12 @@
+{
+  "nome": "dyanna",
+  "documento": "12345678901",
+  "telefone": "regth",
+  "dataNascimento": "01/08/2003",
+  "endereco": "rua edna amorim rabelo, shagrila 36680000,num 80",
+  "patrimonioTotal": 7000.0,
+  "tipo": "Pessoa Física",
+  "perfil": "Arrojado",
+  "carteira": [
+  ]
+}

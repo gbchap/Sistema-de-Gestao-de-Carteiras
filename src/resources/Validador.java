@@ -53,6 +53,21 @@ public class Validador {
     public static boolean isCPF(String doc) {
         return limparDocumento(doc).length() == 11;
     }
+    public static int validarTelefone(String tel) {
+        if (tel == null || tel.trim().isEmpty()) return -1;
+        // Aceita apenas números, entre 10 e 11 dígitos (DDD + número)
+        String limpo = tel.replaceAll("[^0-9]", "");
+        if (limpo.length() < 10 || limpo.length() > 11) return -50; // Novo código de erro
+        return 0;
+    }
+
+    // Atualizar o validarTexto para ser mais rigoroso com o endereço
+    public static int validarEndereco(String endereco) {
+        if (endereco == null || endereco.trim().isEmpty()) return -10;
+        if (endereco.length() < 15) return -51; // Endereço muito curto para ser "completo"
+        return 0;
+    }
+    
 
     // --- VALIDAÇÃO DE NOMES / TEXTOS ---
     /**
@@ -92,6 +107,6 @@ public class Validador {
         if (!ticker.matches("[A-Z0-9]+")) return -32; // Ticker deve ser alfanumérico
         return 0;
     }
-    
+
     
 }

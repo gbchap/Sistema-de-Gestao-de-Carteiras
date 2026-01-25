@@ -292,5 +292,22 @@ public class ControleUsuario {
         }
         System.out.println("=".repeat(65));
     }
+    public static String lerTelefone() {
+        return lerTextoValidado("Digite o telefone (ex: 32999999999): ");
+    }
+
+    public static String lerDataNascimento() {
+        while (true) {
+            System.out.print("Digite a data de nascimento (dd/mm/aaaa): ");
+            String data = scanner.nextLine();
+            int status = Validador.validarData(data); // Usa a lógica já existente no Validador
+            if (status == 0) return data;
+            exibirMensagemErroValidador(status);
+        }
+    }
+
+    public static String lerEndereco() {
+        return lerTextoValidado("Digite o endereço completo (Rua, Número, Bairro, CEP, Cidade, Estado): ");
+    }
 
 }

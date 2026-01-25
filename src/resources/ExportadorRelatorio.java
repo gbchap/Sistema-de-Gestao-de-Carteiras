@@ -23,6 +23,9 @@ public class ExportadorRelatorio {
             sb.append("{\n");
             sb.append("  \"nome\": \"").append(inv.getNome()).append("\",\n");
             sb.append("  \"documento\": \"").append(inv.getDocumento()).append("\",\n");
+            sb.append("  \"telefone\": \"").append(inv.getTelefone()).append("\",\n"); 
+            sb.append("  \"dataNascimento\": \"").append(inv.getDataNascimento()).append("\",\n");
+            sb.append("  \"endereco\": \"").append(inv.getEndereco()).append("\",\n");
             sb.append("  \"patrimonioTotal\": ").append(inv.getPatrimonioTotal()).append(",\n");
 
             // identifica se é PF ou PJ para campos específicos

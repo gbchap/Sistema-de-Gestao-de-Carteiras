@@ -106,14 +106,17 @@ public class SistemaGestao {
         }
 
         String docLimpo = Validador.limparDocumento(docRaw);
+        String telefone = ControleUsuario.lerTelefone();
+        String dataNasc = ControleUsuario.lerDataNascimento();
+        String endereco = ControleUsuario.lerEndereco();
         double patrimonio = ControleUsuario.lerPrecoAtual();
         
         if (Validador.isCPF(docLimpo)) { 
             String perfil = ControleUsuario.lerPerfil();
-            listaInvestidores.add(new PessoaFisica(nome, docLimpo, patrimonio, perfil));
+            listaInvestidores.add(new PessoaFisica(nome, docLimpo, telefone, dataNasc, endereco, patrimonio, perfil));
         } else { 
             String razao = ControleUsuario.lerRazaoSocial();
-            listaInvestidores.add(new Institucional(nome, docLimpo, patrimonio, razao));
+            listaInvestidores.add(new Institucional(nome, docLimpo, telefone, dataNasc, endereco, patrimonio, razao));
         }
         
         ControleUsuario.exibirMensagemCarga(1); 
