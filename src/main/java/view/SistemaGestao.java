@@ -383,7 +383,7 @@ public class SistemaGestao {
     public static void porcentProdutos() {
         double nac = investidorLogado.getCarteira().getPercentualNacional();
         double inter = investidorLogado.getCarteira().getPercentualInternacional();
-        System.out.printf("\nGeografia: Nacional: %.2f%% | Internacional: %.2f%%\n", nac, inter);
+        System.out.printf("\nNacionalidade: Nacional: %.2f%% | Internacional: %.2f%%\n", nac, inter);
     }
 
         public static void adicionarMovVenda() {

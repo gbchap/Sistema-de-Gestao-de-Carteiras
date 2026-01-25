@@ -3,32 +3,31 @@ package resources;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Locale;
+
 import model.Investidores.Investidor;
 import model.Investidores.PessoaFisica;
 import model.Investidores.Institucional;
 import model.ItemCarteira;
 
-/**
- * Classe responsável por exportar os dados do investidor e sua carteira
- * para um arquivo físico, atendendo ao requisito de persistência do trabalho.
- */
 public class ExportadorRelatorio {
 
     public static void gerarArquivoJson(Investidor inv) throws IOException {
-        // Nome do arquivo baseado no documento (CPF/CNPJ) para ser único
         String nomeArquivo = "relatorio_" + inv.getDocumento() + ".json";
 
+        // Força o uso de ponto como separador decimal (Locale.US) para evitar problemas no JSON
         try (PrintWriter out = new PrintWriter(new FileWriter(nomeArquivo))) {
             StringBuilder sb = new StringBuilder();
             sb.append("{\n");
+            
+            // --- DADOS CADASTRAIS ---
             sb.append("  \"nome\": \"").append(inv.getNome()).append("\",\n");
             sb.append("  \"documento\": \"").append(inv.getDocumento()).append("\",\n");
             sb.append("  \"telefone\": \"").append(inv.getTelefone()).append("\",\n"); 
             sb.append("  \"dataNascimento\": \"").append(inv.getDataNascimento()).append("\",\n");
             sb.append("  \"endereco\": \"").append(inv.getEndereco()).append("\",\n");
-            sb.append("  \"patrimonioTotal\": ").append(inv.getPatrimonioTotal()).append(",\n");
+            sb.append(String.format(Locale.US, "  \"patrimonioTotalDeclarado\": %.2f,\n", inv.getPatrimonioTotal()));
 
-            // identifica se é PF ou PJ para campos específicos
             if (inv instanceof PessoaFisica pf) {
                 sb.append("  \"tipo\": \"Pessoa Física\",\n");
                 sb.append("  \"perfil\": \"").append(pf.getPerfil()).append("\",\n");
@@ -37,24 +36,51 @@ public class ExportadorRelatorio {
                 sb.append("  \"razaoSocial\": \"").append(inst.getRazaoSocial()).append("\",\n");
             }
 
-            // Início da lista da Carteira
+            // --- CÁLCULOS FINANCEIROS (Novos Requisitos) ---
+            double valorTotalAtual = inv.getCarteira().getValorTotalEmReais();
+            
+            // Cálculo do Valor Total Gasto (Iterando sobre os itens)
+            double valorTotalGasto = 0;
+            for (ItemCarteira item : inv.getCarteira().getItens()) {
+                valorTotalGasto += item.getQuantidade() * item.getPrecoMedio();
+            }
+
+            // Obtendo as porcentagens da classe Carteira
+            double pctRendaFixa = inv.getCarteira().getPercentualRendaFixa();
+            double pctRendaVariavel = inv.getCarteira().getPercentualRendaVariavel();
+            double pctNacional = inv.getCarteira().getPercentualNacional();
+            double pctInternacional = inv.getCarteira().getPercentualInternacional();
+
+            // Adicionando ao JSON
+            sb.append(String.format(Locale.US, "  \"valorTotalGasto\": %.2f,\n", valorTotalGasto));
+            sb.append(String.format(Locale.US, "  \"valorTotalAtual\": %.2f,\n", valorTotalAtual));
+            
+            sb.append("  \"alocacao\": {\n");
+            sb.append(String.format(Locale.US, "    \"rendaFixa\": %.2f,\n", pctRendaFixa));
+            sb.append(String.format(Locale.US, "    \"rendaVariavel\": %.2f\n", pctRendaVariavel));
+            sb.append("  },\n");
+
+            sb.append("  \"nacionalidade\": {\n");
+            sb.append(String.format(Locale.US, "    \"nacional\": %.2f,\n", pctNacional));
+            sb.append(String.format(Locale.US, "    \"internacional\": %.2f\n", pctInternacional));
+            sb.append("  },\n");
+
+            // --- ITENS DA CARTEIRA ---
             sb.append("  \"carteira\": [\n");
             var itens = inv.getCarteira().getItens();
             for (int i = 0; i < itens.size(); i++) {
                 ItemCarteira item = itens.get(i);
                 sb.append("    {\n");
                 sb.append("      \"ticker\": \"").append(item.getAtivo().getTicker()).append("\",\n");
-                sb.append("      \"quantidade\": ").append(item.getQuantidade()).append(",\n");
-                sb.append("      \"precoMedio\": ").append(item.getPrecoMedio()).append("\n");
+                sb.append(String.format(Locale.US, "      \"quantidade\": %.4f,\n", item.getQuantidade()));
+                sb.append(String.format(Locale.US, "      \"precoMedio\": %.2f\n", item.getPrecoMedio()));
                 sb.append("    }");
                 
-                // Só adiciona vírgula se não for o último item (regra do JSON)
                 if (i < itens.size() - 1) sb.append(",");
                 sb.append("\n");
             }
             sb.append("  ]\n}");
 
-            // Escreve tudo de uma vez no arquivo
             out.print(sb.toString());
         }
     }
