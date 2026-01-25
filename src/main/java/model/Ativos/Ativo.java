@@ -60,7 +60,6 @@ public abstract class Ativo {
         return precoAtual;
     }
 
-
     public void setPrecoAtual(double precoAtual) {
         if (precoAtual < 0) {
             throw new IllegalArgumentException("Preço não pode ser negativo.");
@@ -79,10 +78,10 @@ public abstract class Ativo {
         this.qualificado = qualificado;
     }
 
-    /**
-     * Método abstrato para identificar se o ativo é de Renda Fixa ou Variável.
-     * Deve ser implementado pelas subclasses
-     */
+    
+    //Método abstrato para identificar se o ativo é de Renda Fixa ou Variável.
+    //Deve ser implementado pelas subclasses
+    
     public abstract String getTipoRenda();
 
     @Override

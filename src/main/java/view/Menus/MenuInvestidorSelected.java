@@ -52,9 +52,6 @@ public class MenuInvestidorSelected extends MenuBase {
             case 11: 
                 SistemaGestao.adicionarLoteMov(); 
                 break;
-            case 0:
-                
-                break;
             default: 
                 throw new OpcaoInvalidaException(opcao);
         }

@@ -35,7 +35,7 @@ public class CarregarCSV {
         return listaCompleta;
     }
 
-    private static List<Acao> lerAcoes(String caminho) {
+    public static List<Acao> lerAcoes(String caminho) {
         List<Acao> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha = br.readLine(); // Pular cabeçalho
@@ -54,7 +54,7 @@ public class CarregarCSV {
         return lista;
     }
 
-    private static List<FII> lerFIIs(String caminho) {
+    public static List<FII> lerFIIs(String caminho) {
         List<FII> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha = br.readLine();
@@ -87,7 +87,7 @@ public class CarregarCSV {
         return lista;
     }
 
-    private static List<Criptoativo> lerCriptos(String caminho) {
+    public static List<Criptoativo> lerCriptos(String caminho) {
         List<Criptoativo> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha = br.readLine();
@@ -113,7 +113,7 @@ public class CarregarCSV {
         return lista;
     }
 
-    private static List<Stock> lerStocks(String caminho) {
+    public static List<Stock> lerStocks(String caminho) {
         List<Stock> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha = br.readLine();
@@ -128,7 +128,7 @@ public class CarregarCSV {
         return lista;
     }
 
-    private static List<Tesouro> lerTesouro(String caminho) {
+    public static List<Tesouro> lerTesouro(String caminho) {
         List<Tesouro> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha = br.readLine();
@@ -141,7 +141,8 @@ public class CarregarCSV {
             System.err.println("Erro ao ler tesouro.csv: " + e.getMessage());
         }
         return lista;
-        }
+    }
+
     public static List<Investidor> lerInvestidores(String caminho) {
         List<Investidor> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
