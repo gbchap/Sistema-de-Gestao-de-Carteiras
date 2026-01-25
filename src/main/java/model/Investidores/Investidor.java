@@ -56,17 +56,18 @@ public abstract class Investidor {
         this.historico.add(m);
     }
     public boolean venderAtivo(String ticker, double quantidade) {
-    for (ItemCarteira item : carteira.getItens()) {
-        if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
-            if (item.getQuantidade() >= quantidade) {
-                item.setQuantidade(item.getQuantidade() - quantidade);
-                // Registra a movimentação de venda
-                this.historico.add(new Movimentacao("V" + System.currentTimeMillis(), item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda"));
-                return true;
+        for (ItemCarteira item : carteira.getItens()) {
+            if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
+                // TRAVA: Verifica se a quantidade em carteira é suficiente
+                if (item.getQuantidade() >= quantidade) {
+                    item.setQuantidade(item.getQuantidade() - quantidade);
+                    this.historico.add(new Movimentacao("V" + System.currentTimeMillis(), 
+                                        item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda"));
+                    return true;
+                }
             }
         }
+        return false;
     }
-    return false;
-}
 
 }

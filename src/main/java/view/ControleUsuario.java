@@ -237,24 +237,15 @@ public class ControleUsuario {
             System.err.println("\n[ERRO]: " + mensagem);
         }
     }
-    public static void exibirTabelaAtivos(List<Ativo> ativos) {
-        System.out.println("\n--- RELATÓRIO DE ATIVOS ---");
-        // Cabeçalho da tabela
-        System.out.printf("%-10s | %-30s | %-15s | %-10s\n", "Ticker", "Nome", "Preço", "Qualificado");
-        System.out.println("---------------------------------------------------------------------------");
-
-        for (Ativo a : ativos) {
-            // Usamos polimorfismo com a interface TipoAtivo para formatar o preço (R$ ou $)
-            String precoFormatado = ((model.TipoAtivo) a).formatar(a.getPrecoAtual());
-            
-            System.out.printf("%-10s | %-30s | %-15s | %-10s\n", 
-                a.getTicker(), 
-                a.getNome(), 
-                precoFormatado, 
-                a.isQualificado() ? "Sim" : "Não");
-        }
-        System.out.println("---------------------------------------------------------------------------");
+    public static void exibirTabelaAtivos(List<model.Ativos.Ativo> ativos) {
+    System.out.println("\n--- RELATÓRIO DE ATIVOS ---");
+    System.out.printf("%-10s | %-30s | %-12s | %-10s\n", "Ticker", "Nome", "Preço", "Qualificado");
+    System.out.println("-".repeat(70));
+    for (model.Ativos.Ativo a : ativos) {
+        System.out.printf("%-10s | %-30s | R$ %-10.2f | %-10s\n",
+            a.getTicker(), a.getNome(), a.getPrecoAtual(), (a.isQualificado() ? "Sim" : "Não"));
     }
+}
     public static String lerDocumentoValidado() {
         while (true) {
             System.out.print("Digite o CPF/CNPJ do investidor: ");
