@@ -17,6 +17,19 @@ public class ItemCarteira {
     public double getQuantidade() { return quantidade; }
     public double getPrecoMedio() { return precoMedio; }
     
-    public void setQuantidade(double quantidade) { this.quantidade = quantidade; }
-    public void setPrecoMedio(double precoMedio) { this.precoMedio = precoMedio; }
+    public void setQuantidade(double quantidade) {
+        if (quantidade >= 0){
+            this.quantidade = quantidade;
+        }else{
+            throw new IllegalArgumentException("Quantidade não pode ser negativa ou vazia.");
+        }
+    }
+
+    public void setPrecoMedio(double precoMedio) { 
+        if(precoMedio >= 0){
+            this.precoMedio = precoMedio;
+        }else{
+            throw new IllegalArgumentException("Preço médio não pode ser negativo ou vazio.");
+        }
+    }
 }

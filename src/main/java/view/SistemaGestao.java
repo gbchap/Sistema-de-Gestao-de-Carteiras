@@ -21,6 +21,9 @@ import model.Investidores.PessoaFisica;
 public class SistemaGestao {
     private static List<Ativo> bancoDeAtivos = new ArrayList<>();
     private static List<Investidor> listaInvestidores = new ArrayList<>();
+
+    private static Investidor investidorLogado = null;
+
     public static void main(String[] args) {
         try {
             // Carga inicial obrigatória 
@@ -141,11 +144,14 @@ public class SistemaGestao {
 
         Ativo ativo = bancoDeAtivos.get(index);
 
+        System.out.println("-------------------------------------------------");
         System.out.println("Digite a propriedade do ativo que deseja editar: ");
+        System.out.println("-------------------------------------------------");
         System.out.println("1. Nome");
         System.out.println("2. Ticker");
         System.out.println("3. Preço Atual");
         System.out.println("4. Qualificado");
+        System.out.println("-------------------------------------------------");
 
         int propriedade = ControleUsuario.lerOpcao();
         switch(propriedade){
@@ -205,13 +211,12 @@ public class SistemaGestao {
             statusDoc = Validador.validarDocumento(docRaw);
 
             if (statusDoc == 0) {
-             
-            String docLimpoTemp = Validador.limparDocumento(docRaw);
-            if (buscarInvestidor(docLimpoTemp) != null) {
-                ControleUsuario.exibirMensagemErroValidador(-6);
-                continue;
-            }
-            break; 
+                String docLimpoTemp = Validador.limparDocumento(docRaw);
+                if (buscarInvestidor(docLimpoTemp) != null) {
+                    ControleUsuario.exibirMensagemErroValidador(-6);
+                    continue;
+                }
+                break; 
             } else {
                 ControleUsuario.exibirMensagemErroValidador(statusDoc);
             }
@@ -252,9 +257,6 @@ public class SistemaGestao {
         ControleUsuario.exibirListaInvestidores(listaInvestidores);
     }
 
-
-    private static Investidor investidorLogado = null;
-
     public static void selecionarInvestidor() {
         String doc = ControleUsuario.lerDocumentoValidado();
         Investidor encontrado = buscarInvestidor(doc); 
@@ -262,17 +264,13 @@ public class SistemaGestao {
         if (encontrado != null) {
             investidorLogado = encontrado;
             ControleUsuario.exibirMensagemCarga(1); 
-            
             new view.Menus.MenuInvestidorSelected().executar(); 
-            
             investidorLogado = null; 
         } else {
             ControleUsuario.exibirErroCustomizado("Investidor não encontrado.");
         }
     }
 
-    
-    
     
     public static boolean validarPermissaoInvestimento(Ativo ativo) {
         if (investidorLogado instanceof Institucional) return true; // Institucional pode tudo
@@ -310,17 +308,12 @@ public class SistemaGestao {
         }
 
         try {
-             
             resources.ExportadorRelatorio.gerarArquivoJson(investidorLogado);
-
             String nomeArquivo = "relatorio_" + investidorLogado.getDocumento() + ".json";
-            
             ControleUsuario.exibirSucessoExportacao(nomeArquivo);
-
         } catch (java.io.IOException e) {
             ControleUsuario.exibirErroCustomizado("Erro ao gravar no disco: " + e.getMessage());
         }
-        
     }
 
      
@@ -378,19 +371,19 @@ public class SistemaGestao {
         System.out.printf("\nNacionalidade: Nacional: %.2f%% | Internacional: %.2f%%\n", nac, inter);
     }
 
-        public static void adicionarMovVenda() {
-            String ticker = ControleUsuario.lerTicker();
-            double qtd = ControleUsuario.lerQuantidade();
-            String instituicao = ControleUsuario.lerInstituicao();
+    public static void adicionarMovVenda() {
+        String ticker = ControleUsuario.lerTicker();
+        double qtd = ControleUsuario.lerQuantidade();
+        String instituicao = ControleUsuario.lerInstituicao();
 
-            boolean sucesso = investidorLogado.venderAtivo(ticker, qtd, instituicao);
+        boolean sucesso = investidorLogado.venderAtivo(ticker, qtd, instituicao);
 
-            if (sucesso) {
-                ControleUsuario.exibirSucesso("Venda realizada!");
-            } else {
-                ControleUsuario.exibirErroCustomizado("Quantidade insuficiente ou ativo não possuído.");
-            }
+        if (sucesso) {
+            ControleUsuario.exibirSucesso("Venda realizada!");
+        } else {
+            ControleUsuario.exibirErroCustomizado("Quantidade insuficiente ou ativo não possuído.");
         }
+    }
         
 
     public static void adicionarLoteMov() {
@@ -422,7 +415,7 @@ public class SistemaGestao {
                             if (sucesso) processados++;
                         }
                     } catch (NumberFormatException e) {
-                      
+                        ControleUsuario.exibirMensagemErroValidador(0);
                     }
                 }
             }
@@ -474,20 +467,21 @@ public class SistemaGestao {
 
   
     public static void cadastrarInvestidorLote() {
-    System.out.print("Digite o caminho do arquivo (ex: Arquivoscsv/investidores.csv): ");
+        System.out.print("Digite o caminho do arquivo (ex: Arquivoscsv/investidores.csv): ");
     
-    java.util.Scanner scannerManual = new java.util.Scanner(System.in);
-    String caminho = scannerManual.nextLine();
+        java.util.Scanner scannerManual = new java.util.Scanner(System.in);
+        String caminho = scannerManual.nextLine();
 
-    List<Investidor> novos = resources.CarregarCSV.lerInvestidores(caminho);
-    int adicionados = 0;
+        List<Investidor> novos = resources.CarregarCSV.lerInvestidores(caminho);
+        int adicionados = 0;
 
-    for (Investidor novo : novos) {
-        if (buscarInvestidor(novo.getDocumento()) == null) {
-            listaInvestidores.add(novo);
-            adicionados++;
+        for (Investidor novo : novos) {
+            if (buscarInvestidor(novo.getDocumento()) == null) {
+                listaInvestidores.add(novo);
+                adicionados++;
+            }
         }
+        view.ControleUsuario.exibirMensagemCarga(adicionados);
+        scannerManual.close();
     }
-    view.ControleUsuario.exibirMensagemCarga(adicionados);
-}
 }

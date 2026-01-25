@@ -111,7 +111,7 @@ public class ControleUsuario {
 
     public static int lerTipoAtivo() {
         while (true) {
-            System.out.println("\n--- SELECIONE O TIPO DE ATIVO ---");
+            System.out.println("\n--------- SELECIONE O TIPO DE ATIVO ---------");
             System.out.println("1-Ação | 2-FII | 3-Cripto | 4-Stock | 5-Tesouro");
             System.out.print("Opção: ");
             int op = lerOpcao();
@@ -152,11 +152,11 @@ public class ControleUsuario {
 
     public static String lerPerfil() {
         while (true) {
-            System.out.println("\n--- PERFIL DO INVESTIDOR ---");
+            System.out.println("\n--------- PERFIL DO INVESTIDOR ---------");
             System.out.println("1 - Conservador");
             System.out.println("2 - Moderado");
             System.out.println("3 - Arrojado");
-            System.out.print("Selecione (1-3): ");
+            System.out.println("Selecione (1-3): ");
             
             String op = scanner.nextLine();
             switch (op) {
@@ -171,14 +171,14 @@ public class ControleUsuario {
 
     public static String lerRazaoSocial() {
         while (true) {
-        System.out.print("Digite a Razão Social da Instituição: ");
-        String razao = scanner.nextLine();
-        int status = Validador.validarTexto(razao);
+            System.out.print("Digite a Razão Social da Instituição: ");
+            String razao = scanner.nextLine();
+            int status = Validador.validarTexto(razao);
         
-        if (status == 0) return razao;
+            if (status == 0) return razao;
         
-        exibirMensagemErroValidador(status);
-    }
+            exibirMensagemErroValidador(status);
+        }
     }
 
     public static void exibirListaInvestidores(List<Investidor> investidores) {
@@ -198,7 +198,7 @@ public class ControleUsuario {
                         i.getNome(), i.getDocumento(), i.getPatrimonioTotal(), tipoInfo);
             }
         }
-        System.out.println("--------------------------------------------");
+        System.out.println("-------------------------------------------------");
     }
 
     private static final String REGRA_DOC = " CPF precisa de 11 dígitos e CNPJ precisa de 14.";
@@ -235,15 +235,17 @@ public class ControleUsuario {
             System.err.println("\n[ERRO]: " + mensagem);
         }
     }
+
     public static void exibirTabelaAtivos(List<model.Ativos.Ativo> ativos) {
-    System.out.println("\n--- RELATÓRIO DE ATIVOS ---");
-    System.out.printf("%-10s | %-30s | %-12s | %-10s\n", "Ticker", "Nome", "Preço", "Qualificado");
-    System.out.println("-".repeat(70));
-    for (model.Ativos.Ativo a : ativos) {
-        System.out.printf("%-10s | %-30s | R$ %-10.2f | %-10s\n",
-            a.getTicker(), a.getNome(), a.getPrecoAtual(), (a.isQualificado() ? "Sim" : "Não"));
+        System.out.println("\n--------------- RELATÓRIO DE ATIVOS ------------------ ");
+        System.out.printf("%-10s | %-30s | %-12s | %-10s\n", "Ticker", "Nome", "Preço", "Qualificado");
+        System.out.println("-".repeat(70));
+        for (model.Ativos.Ativo a : ativos) {
+            System.out.printf("%-10s | %-30s | R$ %-10.2f | %-10s\n",
+                a.getTicker(), a.getNome(), a.getPrecoAtual(), (a.isQualificado() ? "Sim" : "Não"));
+        }
     }
-}
+
     public static String lerDocumentoValidado() {
         while (true) {
             System.out.print("Digite o CPF/CNPJ do investidor: ");
@@ -253,19 +255,22 @@ public class ControleUsuario {
             exibirMensagemErroValidador(status);
         }
     }
+
     public static void exibirSucessoExportacao(String nomeArquivo) {
         System.out.println("\n[SISTEMA]: Relatório gerado com sucesso!");
         System.out.println("[ARQUIVO]: " + nomeArquivo);
     }
-   public static double lerQuantidade() {
-            java.util.Scanner scanner = new java.util.Scanner(System.in);
-            System.out.print("Digite a quantidade (pode usar casas decimais para criptos): ");
-            while (!scanner.hasNextDouble()) {
-                System.out.print("Erro! Digite um valor numérico válido: ");
-                scanner.next();
-            }
-            return scanner.nextDouble();
+
+    public static double lerQuantidade() {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        System.out.print("Digite a quantidade (pode usar casas decimais para criptos): ");
+        while (!scanner.hasNextDouble()) {
+            System.out.print("Erro! Digite um valor numérico válido: ");
+            scanner.next();
         }
+        return scanner.nextDouble();
+    }
+
     public static void exibirSucesso(String mensagem) {
         System.out.println("\n[SUCESSO] " + mensagem);
     }
@@ -287,8 +292,10 @@ public class ControleUsuario {
                 valorGasto,
                 valorAtual);
         }
+
         System.out.println("=".repeat(65));
     }
+
     public static String lerTelefone() {
         System.out.print("Digite o novo telefone (apenas números): ");
         return scanner.nextLine();
@@ -307,6 +314,7 @@ public class ControleUsuario {
     public static String lerEndereco() {
         return lerTextoValidado("Digite o endereço completo (Rua, Número, Bairro, CEP, Cidade, Estado): ");
     }
+
     public static String lerListaDocumentos() {
         System.out.println("\nDigite os CPFs ou CNPJs separados por vírgula para exclusão:");
         System.out.print("Exemplo (12345678901, 98765432100): ");

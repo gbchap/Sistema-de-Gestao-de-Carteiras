@@ -26,12 +26,12 @@ public abstract class Ativo {
         return this.precoAtual;
     }
 
+
     public String getNome() {
         return nome;
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
         if(nome != null && !nome.isEmpty()){
             this.nome = nome;
         } else {
@@ -67,14 +67,12 @@ public abstract class Ativo {
     }
 
     public void setQualificado(boolean qualificado) {
-        if(qualificado != true && qualificado != false){
-            ControleUsuario.exibirErroCustomizado("Valor inválido para qualificado.");
-        }
         this.qualificado = qualificado;
     }
 
 
     public abstract String getTipoRenda();
+
 
     @Override
     public String toString() {

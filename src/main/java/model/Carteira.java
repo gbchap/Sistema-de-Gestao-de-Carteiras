@@ -44,7 +44,7 @@ public class Carteira {
         return (rf / totalGeral) * 100;
     }
 
-        public double getPercentualRendaVariavel() {
+    public double getPercentualRendaVariavel() {
         return 100 - getPercentualRendaFixa(); 
     }
 

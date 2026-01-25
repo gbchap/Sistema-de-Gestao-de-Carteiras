@@ -18,7 +18,7 @@ public abstract class Investidor {
     protected Carteira carteira;
     protected List<Movimentacao> historico;
 
-public Investidor(String nome, String documento, String telefone, String dataNascimento, String endereco, double patrimonioTotal) {
+    public Investidor(String nome, String documento, String telefone, String dataNascimento, String endereco, double patrimonioTotal) {
         this.nome = nome;
         this.documento = documento;
         this.telefone = telefone;
@@ -43,15 +43,27 @@ public Investidor(String nome, String documento, String telefone, String dataNas
     public String getEndereco() { return endereco; }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        if(nome != null && !nome.trim().isEmpty()) {
+            this.nome = nome;
+        }else {
+            throw new IllegalArgumentException("Nome não pode ser vazio.");
+        }
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = telefone;
+        if(telefone != null && !telefone.trim().isEmpty()) {
+            this.telefone = telefone;
+        }else {
+            throw new IllegalArgumentException("Telefone não pode ser vazio.");
+        }
     }
 
     public void setEndereco(String endereco) {
-        this.endereco = endereco;
+        if(endereco != null && !endereco.trim().isEmpty()) {
+            this.endereco = endereco;
+        }else {
+            throw new IllegalArgumentException("Endereço não pode ser vazio.");
+        }
     }
 
 
@@ -64,50 +76,48 @@ public Investidor(String nome, String documento, String telefone, String dataNas
     public boolean isQualificado() {
         return this.patrimonioTotal >= 1000000.0;
     }
-public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao, String instituicao) {
-    ItemCarteira itemExistente = null;
-    for (ItemCarteira item : carteira.getItens()) {
-        if (item.getAtivo().getTicker().equalsIgnoreCase(ativo.getTicker())) {
-            itemExistente = item;
-            break;
-        }
-    }
 
-    if (itemExistente != null) {
-       
-        double custoTotalAntigo = itemExistente.getQuantidade() * itemExistente.getPrecoMedio();
-        double novoCusto = quantidade * precoExecucao;
-        double novaQuantidade = itemExistente.getQuantidade() + quantidade;
-        
-        itemExistente.setQuantidade(novaQuantidade);
-        itemExistente.setPrecoMedio((custoTotalAntigo + novoCusto) / novaQuantidade);
-    } else {
-        
-        carteira.adicionarItem(new ItemCarteira(ativo, quantidade, precoExecucao));
-    }
-    
-    
-    this.historico.add(new Movimentacao("C"+System.currentTimeMillis(), ativo, quantidade, precoExecucao, "Compra", instituicao));
-}
-
-public boolean venderAtivo(String ticker, double quantidade, String instituicao) {
-    for (ItemCarteira item : carteira.getItens()) {
-        if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
-            
-            if (item.getQuantidade() >= quantidade) {
-                item.setQuantidade(item.getQuantidade() - quantidade);
-                
-                
-                if (item.getQuantidade() <= 0) {
-                    carteira.getItens().remove(item);
-                }
-                
-                this.historico.add(new Movimentacao("V"+System.currentTimeMillis(), 
-                        item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda", instituicao));
-                return true;
+    public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao, String instituicao) {
+        ItemCarteira itemExistente = null;
+        for (ItemCarteira item : carteira.getItens()) {
+            if (item.getAtivo().getTicker().equalsIgnoreCase(ativo.getTicker())) {
+                itemExistente = item;
+                break;
             }
         }
+
+        if (itemExistente != null) {
+       
+            double custoTotalAntigo = itemExistente.getQuantidade() * itemExistente.getPrecoMedio();
+            double novoCusto = quantidade * precoExecucao;
+            double novaQuantidade = itemExistente.getQuantidade() + quantidade;
+            
+            itemExistente.setQuantidade(novaQuantidade);
+            itemExistente.setPrecoMedio((custoTotalAntigo + novoCusto) / novaQuantidade);
+
+        } else {
+            carteira.adicionarItem(new ItemCarteira(ativo, quantidade, precoExecucao));
+        }
+        this.historico.add(new Movimentacao("C"+System.currentTimeMillis(), ativo, quantidade, precoExecucao, "Compra", instituicao));
     }
-    return false;
-}
+
+    public boolean venderAtivo(String ticker, double quantidade, String instituicao) {
+        for (ItemCarteira item : carteira.getItens()) {
+            if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
+                
+                if (item.getQuantidade() >= quantidade) {
+                    item.setQuantidade(item.getQuantidade() - quantidade);
+                    
+                    if (item.getQuantidade() <= 0) {
+                        carteira.getItens().remove(item);
+                    }
+                    
+                    this.historico.add(new Movimentacao("V"+System.currentTimeMillis(), 
+                            item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda", instituicao));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -153,6 +153,7 @@ public class CarregarCSV {
                 double patri = Double.parseDouble(d[5]);
                 String tipo = d[6]; // PF ou PJ
                 String extra = d[7]; // Perfil ou Razão Social
+                
                 if (tipo.equalsIgnoreCase("PF")) {
                     lista.add(new model.Investidores.PessoaFisica(nome, doc, tel, nasc, endereco, patri, extra));
                 } else {
@@ -160,7 +161,7 @@ public class CarregarCSV {
                 }
             }
         } catch (IOException e) {
-        System.err.println("Erro ao ler investidores: " + e.getMessage());
+            System.err.println("Erro ao ler investidores: " + e.getMessage());
         }
         return lista;
     }
