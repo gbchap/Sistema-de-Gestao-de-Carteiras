@@ -311,5 +311,14 @@ public class ControleUsuario {
     public static String lerEndereco() {
         return lerTextoValidado("Digite o endereço completo (Rua, Número, Bairro, CEP, Cidade, Estado): ");
     }
+    public static String lerListaDocumentos() {
+        System.out.println("\nDigite os CPFs ou CNPJs separados por vírgula para exclusão:");
+        System.out.print("Exemplo (12345678901, 98765432100): ");
+        return scanner.nextLine();
+    }
 
+    public static String lerCaminhoArquivo() {
+        System.out.print("Digite o caminho do arquivo de movimentações (ex: resources/Arquivoscsv/movs.csv): ");
+        return scanner.nextLine();
+    }
 }

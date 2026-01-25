@@ -69,11 +69,21 @@ public class SistemaGestao {
 
     }
 
-    public static void excluiAtivo(){
+public static void excluiAtivo() {
+    String ticker = ControleUsuario.lerTicker();
+    Ativo alvo = buscarAtivoPorTicker(ticker);
 
+    if (alvo != null) {
+        bancoDeAtivos.remove(alvo);
+        // PROPAGAÇÃO: Remove das carteiras de todos os investidores 
+        for (Investidor inv : listaInvestidores) {
+            inv.getCarteira().removerAtivoPorTicker(ticker);
+        }
+        ControleUsuario.exibirSucesso("Ativo removido do sistema e de todas as carteiras.");
+    } else {
+        ControleUsuario.exibirErroCustomizado("Ativo não encontrado.");
     }
-
-
+}
     
 
     //###############################  MENU INVESTIDOR ################################### 
@@ -131,23 +141,6 @@ public class SistemaGestao {
         return null; // Percorreu a lista toda e não achou ninguém
     }
 
-    public static void cadastrarInvestidorLote() {
-        String caminho = "resources/Arquivoscsv/investidores.csv"; 
-        List<Investidor> novos = CarregarCSV.lerInvestidores(caminho);
-        int cont = 0;
-
-        for (Investidor novo : novos) {
-            // SÓ ADICIONA SE NÃO EXISTIR NA LISTA ATUAL
-            if (buscarInvestidor(novo.getDocumento()) == null) {
-                listaInvestidores.add(novo);
-                cont++;
-            }
-        }
-        ControleUsuario.exibirMensagemCarga(cont);
-    }
-    public static void excluirInvestidores(){
-
-    }
 
     public static void listarInvestidores() {
     // Se a lista estiver vazia, avisa a view sem usar Strings aqui
@@ -285,17 +278,19 @@ public class SistemaGestao {
     }
 
     public static void excluirInvestidor() {
-        listaInvestidores.remove(investidorLogado);
-        investidorLogado = null; // "Desloga"
-        ControleUsuario.exibirSucesso("Investidor e sua carteira foram removidos do sistema.");
-    }
+    listaInvestidores.remove(investidorLogado);
+    investidorLogado = null; 
+    ControleUsuario.exibirSucesso("Investidor e sua carteira foram removidos.");
+}
+
+    // Item 3 - Exibir ativos do investidor [cite: 129]
     public static void exibirAtivosInvestidor() {
-        var itens = investidorLogado.getCarteira().getItens();
+        List<ItemCarteira> itens = investidorLogado.getCarteira().getItens();
         if (itens.isEmpty()) {
-            ControleUsuario.exibirErroCustomizado("A carteira está vazia.");
-            return;
+            ControleUsuario.exibirErroCustomizado("Investidor não possui ativos na carteira.");
+        } else {
+            ControleUsuario.exibirTabelaItensCarteira(investidorLogado.getNome(), itens);
         }
-        ControleUsuario.exibirTabelaItensCarteira(investidorLogado.getNome(), itens);
     }
 
     public static void exibirValorTotalGasto() {
@@ -323,39 +318,10 @@ public class SistemaGestao {
         System.out.printf("\nGeografia: Nacional: %.2f%% | Internacional: %.2f%%\n", nac, inter);
     }
 
-    public static void adicionarMovCompra() {
-        String ticker = ControleUsuario.lerTicker();
-        
-        // 1. Busca o ativo no banco global
-        Ativo ativoAlvo = null;
-        for (Ativo a : bancoDeAtivos) {
-            if (a.getTicker().equalsIgnoreCase(ticker)) {
-                ativoAlvo = a;
-                break;
-            }
-        }
-
-        if (ativoAlvo == null) {
-            ControleUsuario.exibirErroCustomizado("Ativo não encontrado no sistema.");
-            return;
-        }
-
-        // 2. Valida Permissão (Perfil e Qualificado) [cite: 196-200]
-        if (!validarPermissaoInvestimento(ativoAlvo)) return;
-
-        // 3. Executa a compra
-        double qtd = ControleUsuario.lerQuantidade();
-        double preco = ativoAlvo.getPrecoAtual(); // Ou pedir o preço de execução manual
-        
-        investidorLogado.comprarAtivo(ativoAlvo, qtd, preco);
-        ControleUsuario.exibirSucesso("Compra de " + ticker + " realizada com sucesso!");
-    }
-
         public static void adicionarMovVenda() {
             String ticker = ControleUsuario.lerTicker();
             double qtd = ControleUsuario.lerQuantidade();
 
-            // Valida se tem o ativo e quantidade suficiente 
             boolean sucesso = investidorLogado.venderAtivo(ticker, qtd);
             
             if (sucesso) {
@@ -364,7 +330,111 @@ public class SistemaGestao {
                 ControleUsuario.exibirErroCustomizado("Quantidade insuficiente ou ativo não possuído.");
             }
         }
-        public static void adicionarLoteMov(){
+        
 
+    public static void adicionarLoteMov() {
+        // 1. Interação com o usuário delegada para a View
+        String caminho = ControleUsuario.lerCaminhoArquivo();
+
+        // 2. Uso de Try-with-resources para garantir o fechamento do arquivo
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(caminho))) {
+            String linha = br.readLine(); // Pular cabeçalho
+            int processados = 0;
+            
+            while ((linha = br.readLine()) != null) {
+                String[] d = linha.split(";"); // Formato esperado: Ticker;Tipo;Quantidade;Preco
+                
+                // Validação simples de colunas para evitar IndexOutOfBounds
+                if (d.length < 4) continue;
+
+                Ativo a = buscarAtivoPorTicker(d[0]);
+                
+                // Verifica se o ativo existe e se o investidor tem permissão (Perfil)
+                if (a != null && validarPermissaoInvestimento(a)) {
+                    try {
+                        double qtd = Double.parseDouble(d[2].replace(",", "."));
+                        double preco = Double.parseDouble(d[3].replace(",", "."));
+                        
+                        if (d[1].equalsIgnoreCase("Compra")) {
+                            investidorLogado.comprarAtivo(a, qtd, preco);
+                            processados++;
+                        } else if (d[1].equalsIgnoreCase("Venda")) {
+                            boolean sucesso = investidorLogado.venderAtivo(d[0], qtd);
+                            if (sucesso) processados++;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Pula linhas com valores numéricos inválidos sem travar o sistema
+                    }
+                }
+            }
+            // 3. Feedback de sucesso via View
+            ControleUsuario.exibirMensagemCarga(processados);
+
+        } catch (java.io.FileNotFoundException e) {
+            ControleUsuario.exibirErroCustomizado("Arquivo não encontrado no caminho: " + caminho);
+        } catch (java.io.IOException e) {
+            ControleUsuario.exibirErroCustomizado("Erro ao ler o arquivo: " + e.getMessage());
+        }
     }
+
+
+
+    public static void adicionarMovCompra() {
+        String ticker = ControleUsuario.lerTicker();
+        Ativo ativo = buscarAtivoPorTicker(ticker);
+
+        if (ativo == null) {
+            ControleUsuario.exibirErroCustomizado("Ativo não encontrado no sistema.");
+            return;
+        }
+
+        if (!validarPermissaoInvestimento(ativo)) return;
+
+        double qtd = ControleUsuario.lerQuantidade();
+        double preco = ativo.getPrecoAtual(); 
+
+        investidorLogado.comprarAtivo(ativo, qtd, preco);
+        ControleUsuario.exibirSucesso("Compra realizada com sucesso!");
+    }
+
+
+// Método auxiliar para buscar ativo no banco global
+private static Ativo buscarAtivoPorTicker(String ticker) {
+    for (Ativo a : bancoDeAtivos) {
+        if (a.getTicker().equalsIgnoreCase(ticker)) return a;
+    }
+    return null;
+}
+    public static void excluirInvestidores() {
+        String listaDocs = ControleUsuario.lerListaDocumentos(); // Crie este método na View para ler a String
+        String[] docs = listaDocs.split(",");
+        int removidos = 0;
+
+        for (String d : docs) {
+            String limpo = Validador.limparDocumento(d.trim());
+            Investidor inv = buscarInvestidor(limpo);
+            if (inv != null) {
+                listaInvestidores.remove(inv);
+                removidos++;
+            }
+        }
+        ControleUsuario.exibirMensagemCarga(removidos);
+    }
+
+// Cadastro em Lote com verificação de duplicidade
+public static void cadastrarInvestidorLote() {
+    System.out.print("Digite o caminho do arquivo (ex: resources/Arquivoscsv/investidores.csv): ");
+    String caminho = new java.util.Scanner(System.in).nextLine();
+    
+    List<Investidor> novos = CarregarCSV.lerInvestidores(caminho);
+    int adicionados = 0;
+
+    for (Investidor novo : novos) {
+        if (buscarInvestidor(novo.getDocumento()) == null) {
+            listaInvestidores.add(novo);
+            adicionados++;
+        }
+    }
+    ControleUsuario.exibirMensagemCarga(adicionados);
+}
 }
