@@ -102,7 +102,7 @@ public class SistemaGestao {
         int tipo = ControleUsuario.lerTipoAtivo();
 
         List<? extends Ativo> novos; 
-
+        
         switch(tipo){
             case 1 -> novos = CarregarCSV.lerAcoes(caminho);
             case 2 -> novos = CarregarCSV.lerFIIs(caminho);
@@ -114,9 +114,7 @@ public class SistemaGestao {
                 return;
             }
         }
-
         int adicionados = 0;
-
         if (novos != null) {
             for (Ativo novoAtivo : novos) {
                 if (buscarAtivoPorTicker(novoAtivo.getTicker()) == null) {
@@ -125,7 +123,6 @@ public class SistemaGestao {
                 }
             }
         }
-
         ControleUsuario.exibirMensagemCarga(adicionados);
     }
 
