@@ -1,4 +1,7 @@
-package model;
+package model.Ativos;
+
+
+import model.TipoAtivo;
 
 public class Tesouro extends Ativo implements TipoAtivo{
     private String tipoRendimento; // Selic, Prefixado ou IPCA+

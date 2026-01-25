@@ -1,5 +1,7 @@
 package model;
 
+import model.Ativos.Ativo;
+
 public class ItemCarteira {
     private Ativo ativo;
     private double quantidade;

@@ -1,4 +1,6 @@
-package model;
+package model.Ativos;
+
+import model.TipoAtivo;
 
 public class Acao extends Ativo implements TipoAtivo {
     public Acao(String nome, String ticker, double precoAtual, boolean qualificado) {

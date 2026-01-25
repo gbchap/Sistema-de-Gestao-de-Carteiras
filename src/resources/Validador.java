@@ -81,6 +81,17 @@ public class Validador {
         if (opcao < min || opcao > max) return -30;
         return 0;
     }
+    /// --- VALIDAÇÃO da entrada para cadastro de Ativos ---
+    public static int validarPreco(double preco) {
+        if (preco < 0) return -20; // Código para valor negativo
+        return 0;
+    }
 
+    public static int validarTicker(String ticker) {
+        if (ticker == null || ticker.trim().length() < 3) return -31; // Ticker muito curto
+        if (!ticker.matches("[A-Z0-9]+")) return -32; // Ticker deve ser alfanumérico
+        return 0;
+    }
+    
     
 }

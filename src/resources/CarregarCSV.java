@@ -6,8 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Ativos.Acao;
+import model.Ativos.Ativo;
+import model.Ativos.Criptoativo;
+import model.Ativos.FII;
+import model.Ativos.Stock;
+import model.Ativos.Tesouro;
 import model.Investidores.Investidor;
-import model.*;
 
 public class CarregarCSV {
 

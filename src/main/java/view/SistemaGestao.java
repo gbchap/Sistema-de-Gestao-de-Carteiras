@@ -7,7 +7,7 @@ import Exceptions.OpcaoInvalidaException;
 import resources.CarregarCSV;
 import resources.Validador;
 import view.Menus.MenuPrincipal;
-import model.*;
+import model.Ativos.*;
 import model.Investidores.Institucional;
 import model.Investidores.Investidor;
 import model.Investidores.PessoaFisica;
@@ -30,19 +30,42 @@ public class SistemaGestao {
 
 //###############################  MENU ATIVOS ################################### 
 
-    public static void cadastrarAtivo() {
-        // A View agora já entrega tudo validado
-        String nome = ControleUsuario.lerNome();
-        String ticker = ControleUsuario.lerTicker();
-        double preco = ControleUsuario.lerPrecoAtual();
-        boolean qualificado = ControleUsuario.lerQualificado();
-        int tipo = ControleUsuario.lerTipoAtivo();
+  public static void cadastrarAtivo() {
+    String nome = ControleUsuario.lerNome();
+    if (Validador.validarTexto(nome) != 0) {
+        ControleUsuario.exibirMensagemErroValidador(-11);
+        return;
+    }
 
+    String ticker = ControleUsuario.lerTicker().toUpperCase();
+    if (Validador.validarTicker(ticker) != 0) {
+        ControleUsuario.exibirMensagemErroValidador(-31);
+        return;
+    }
+
+    double preco = ControleUsuario.lerPrecoAtual();
+    if (Validador.validarPreco(preco) != 0) {
+        ControleUsuario.exibirMensagemErroValidador(-20);
+        return;
+    }
+
+    boolean qualificado = ControleUsuario.lerQualificado();
+    int tipo = ControleUsuario.lerTipoAtivo();
+
+    try {
         Ativo novo = criarAtivoPorTipo(tipo, nome, ticker, preco, qualificado);
         
+        // 1. Salva na Memória (RAM) para uso imediato nesta sessão
         bancoDeAtivos.add(novo);
+        
+        // 2. Salva no Disco (CSV) - Nome da classe conforme solicitado: SalvaAtivo
+        resources.SalvaAtivo.gravarNovoAtivo(novo);
+        
         ControleUsuario.exibirMensagemCarga(1);
+    } catch (Exception e) {
+        ControleUsuario.exibirErroCustomizado("Erro ao salvar permanentemente: " + e.getMessage());
     }
+}
 
     private static Ativo criarAtivoPorTipo(int tipo, String n, String t, double p, boolean q) {
         return switch (tipo) {
@@ -64,10 +87,24 @@ public class SistemaGestao {
     }
 
     public static void excluiAtivo(){
+        String ticker = ControleUsuario.lerTicker();
+        Ativo encontrado = buscarAtivoPorTicker(ticker);
+
+        if (encontrado != null) {
+            // 1. Remove do banco global
+            bancoDeAtivos.remove(encontrado);
+            
+            // 2. CASCATA: Remove de todas as carteiras de todos os investidores
+            for (Investidor inv : listaInvestidores) {
+                inv.getCarteira().removerAtivoPorTicker(ticker);
+            }
+            ControleUsuario.exibirMensagemCarga(1);
+        }
+        else {
+            ControleUsuario.exibirErroCustomizado("Ativo não encontrado.");
+        }
 
     }
-
-
     
 
     //###############################  MENU INVESTIDOR ################################### 
@@ -216,11 +253,11 @@ public class SistemaGestao {
         List<Ativo> filtrados = new ArrayList<>();
         for (Ativo a : bancoDeAtivos) {
             // Filtra usando 'instanceof' para saber a subclasse real do Ativo
-            if (num == 0 && a instanceof model.Acao) filtrados.add(a);
-            else if (num == 1 && a instanceof model.FII) filtrados.add(a);
-            else if (num == 2 && a instanceof model.Criptoativo) filtrados.add(a);
-            else if (num == 3 && a instanceof model.Stock) filtrados.add(a);
-            else if (num == 4 && a instanceof model.Tesouro) filtrados.add(a);
+            if (num == 0 && a instanceof model.Ativos.Acao) filtrados.add(a);
+            else if (num == 1 && a instanceof model.Ativos.FII) filtrados.add(a);
+            else if (num == 2 && a instanceof model.Ativos.Criptoativo) filtrados.add(a);
+            else if (num == 3 && a instanceof model.Ativos.Stock) filtrados.add(a);
+            else if (num == 4 && a instanceof model.Ativos.Tesouro) filtrados.add(a);
         }
 
         if (filtrados.isEmpty()) {
@@ -256,10 +293,19 @@ public class SistemaGestao {
         }
         
     }
-    public static void editarInfoInvestidor(){
+    // Adicione dentro de view/SistemaGestao.java
+    public static Ativo buscarAtivoPorTicker(String ticker) {
+        if (ticker == null || bancoDeAtivos == null) return null;
         
+        for (Ativo a : bancoDeAtivos) {
+            if (a.getTicker().equalsIgnoreCase(ticker.trim())) {
+                return a;
+            }
+        }
+        return null;
     }
-    public static void excluirInvestidor(){
+    
+        public static void excluirInvestidor(){
 
     }
     public static void exibirAtivosInvestidor(){
@@ -278,9 +324,31 @@ public class SistemaGestao {
 
     }
 
-    public static void adicionarMovCompra(){
+  public static void adicionarMovCompra() {
+    if (investidorLogado == null) return;
 
+    // Busca o ativo
+    String ticker = ControleUsuario.lerTicker();
+    Ativo ativo = buscarAtivoPorTicker(ticker);
+
+    if (ativo != null) {
+        // Valida perfil (regra do trabalho)
+        if (validarPermissaoInvestimento(ativo)) {
+            
+            // Usa os novos métodos de leitura
+            double qtd = ControleUsuario.lerQuantidade();
+            double preco = ControleUsuario.lerPrecoAtual();
+
+            // Executa a lógica no objeto investidor
+            investidorLogado.comprarAtivo(ativo, qtd, preco);
+            
+            ControleUsuario.exibirMensagemCarga(1);
+            System.out.println("[SUCESSO] Ativo adicionado à carteira!");
+        }
+    } else {
+        ControleUsuario.exibirErroCustomizado("Ticker não encontrado no sistema.");
     }
+}
     public static void adicionarMovVenda(){
 
     }

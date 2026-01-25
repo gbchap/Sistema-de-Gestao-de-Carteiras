@@ -1,4 +1,7 @@
-package model;
+package model.Ativos;
+
+
+import model.TipoAtivo;
 
 public class Stock extends Ativo implements TipoAtivo {
     private String bolsa;
@@ -13,15 +16,19 @@ public class Stock extends Ativo implements TipoAtivo {
         this.fatorConversao = fatorConversao;
     }
 
-    public double getPrecoEmReais() {
-        return getPrecoAtual() * fatorConversao;
-    }
 
     @Override
     public String formatar(double valor) {
         return String.format("$ %.2f", valor);
     }
 
+  @Override
+    public double getPrecoEmReais() {
+        return getPrecoAtual() * 5.39; 
+    }
+
     @Override
-    public String getTipoRenda() { return "Renda Variável"; }
+    public String getTipoRenda() {
+        return "Renda Variável";
+    }
 }

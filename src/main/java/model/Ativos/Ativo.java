@@ -1,4 +1,4 @@
-package model;
+package model.Ativos;
 
 import view.ControleUsuario;
 
@@ -24,6 +24,9 @@ public abstract class Ativo {
         this.ticker = ticker;
         this.precoAtual = precoAtual;
         this.qualificado = qualificado;
+    }
+    public double getPrecoEmReais() {
+        return this.precoAtual;
     }
 
     // getters e setters 

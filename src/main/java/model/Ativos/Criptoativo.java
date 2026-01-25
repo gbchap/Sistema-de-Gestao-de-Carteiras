@@ -1,4 +1,6 @@
-package model;
+package model.Ativos;
+
+import model.TipoAtivo;
 
 public class Criptoativo extends Ativo implements TipoAtivo{
     private String algoritmoConsenso;
@@ -18,10 +20,13 @@ public class Criptoativo extends Ativo implements TipoAtivo{
         return String.format("$ %.2f", valor);
     }
 
+  @Override
     public double getPrecoEmReais() {
-        return getPrecoAtual() * fatorConversao;
+        return getPrecoAtual() * 5.39;
     }
 
     @Override
-    public String getTipoRenda() { return "Renda Variável"; }
+    public String getTipoRenda() {
+        return "Renda Variável";
+    }
 }

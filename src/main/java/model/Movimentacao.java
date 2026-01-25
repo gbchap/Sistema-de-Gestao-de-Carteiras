@@ -2,6 +2,8 @@ package model;
 
 import java.time.LocalDateTime;
 
+import model.Ativos.Ativo;
+
 public class Movimentacao {
     private String idUnico;
     private Ativo ativo;

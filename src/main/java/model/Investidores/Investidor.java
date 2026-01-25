@@ -3,6 +3,7 @@ package model.Investidores;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Ativos.Ativo;
 import model.Carteira;
 import model.ItemCarteira;
 import model.Movimentacao;
@@ -42,5 +43,30 @@ public abstract class Investidor {
     public boolean isQualificado() {
         return this.patrimonioTotal >= 1000000.0;
     }
+    public void comprarAtivo(Ativo ativo, double quantidade, double preco) {
+        // 1. Atualiza a Carteira
+        ItemCarteira novoItem = new ItemCarteira(ativo, (int)quantidade, preco);
+        this.carteira.adicionarItem(novoItem);
+        
+        // 2. Gera um ID Único simples para a movimentação (ex: M + timestamp)
+        String idMov = "M" + System.currentTimeMillis();
+        
+        // 3. Registra usando a SUA classe Movimentacao
+        Movimentacao m = new Movimentacao(idMov, ativo, quantidade, preco, "Compra");
+        this.historico.add(m);
+    }
+    public boolean venderAtivo(String ticker, double quantidade) {
+    for (ItemCarteira item : carteira.getItens()) {
+        if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
+            if (item.getQuantidade() >= quantidade) {
+                item.setQuantidade(item.getQuantidade() - quantidade);
+                // Registra a movimentação de venda
+                this.historico.add(new Movimentacao("V" + System.currentTimeMillis(), item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda"));
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 }

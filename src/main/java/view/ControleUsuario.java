@@ -3,7 +3,7 @@ package view;
 import java.util.List;
 import java.util.Scanner;
 
-import model.Ativo;
+import model.Ativos.*;
 import model.Investidores.Institucional;
 import model.Investidores.Investidor;
 import model.Investidores.PessoaFisica;
@@ -256,17 +256,50 @@ public class ControleUsuario {
         System.out.println("---------------------------------------------------------------------------");
     }
     public static String lerDocumentoValidado() {
-    while (true) {
-        System.out.print("Digite o CPF/CNPJ do investidor: ");
-        String docRaw = scanner.nextLine();
-        int status = Validador.validarDocumento(docRaw); //
-        if (status == 0) return Validador.limparDocumento(docRaw);
-        exibirMensagemErroValidador(status);
+        while (true) {
+            System.out.print("Digite o CPF/CNPJ do investidor: ");
+            String docRaw = scanner.nextLine();
+            int status = Validador.validarDocumento(docRaw); //
+            if (status == 0) return Validador.limparDocumento(docRaw);
+            exibirMensagemErroValidador(status);
+        }
     }
-}
     public static void exibirSucessoExportacao(String nomeArquivo) {
         System.out.println("\n[SISTEMA]: Relatório gerado com sucesso!");
         System.out.println("[ARQUIVO]: " + nomeArquivo);
+    }
+   public static double lerQuantidade() {
+            java.util.Scanner scanner = new java.util.Scanner(System.in);
+            System.out.print("Digite a quantidade (pode usar casas decimais para criptos): ");
+            while (!scanner.hasNextDouble()) {
+                System.out.print("Erro! Digite um valor numérico válido: ");
+                scanner.next();
+            }
+            return scanner.nextDouble();
+        }
+    public static void exibirSucesso(String mensagem) {
+        System.out.println("\n[SUCESSO] " + mensagem);
+    }
+
+    public static void exibirTabelaItensCarteira(String nomeInvestidor, List<model.ItemCarteira> itens) {
+        System.out.println("\n" + "=".repeat(65));
+        System.out.println("            CARTEIRA DE ATIVOS - " + nomeInvestidor.toUpperCase());
+        System.out.println("=".repeat(65));
+        System.out.printf("%-10s | %-8s | %-18s | %-18s\n", "TICKER", "QTD", "VALOR GASTO(R$)", "VALOR ATUAL(R$)");
+        System.out.println("-".repeat(65));
+
+        for (var item : itens) {
+            // A View apenas exibe. Os cálculos de conversão já devem vir do Model
+            double valorGasto = item.getQuantidade() * item.getPrecoMedio();
+            double valorAtual = item.getQuantidade() * item.getAtivo().getPrecoEmReais();
+
+            System.out.printf("%-10s | %-8.2f | %-18.2f | %-18.2f\n",
+                item.getAtivo().getTicker(),
+                item.getQuantidade(),
+                valorGasto,
+                valorAtual);
+        }
+        System.out.println("=".repeat(65));
     }
 
 }

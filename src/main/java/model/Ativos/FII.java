@@ -1,4 +1,6 @@
-package model;
+package model.Ativos;
+
+import model.TipoAtivo;
 
 public class FII extends Ativo implements TipoAtivo {
     private String segmento;
