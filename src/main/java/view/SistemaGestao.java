@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import Exceptions.OpcaoInvalidaException;
@@ -30,6 +31,7 @@ public class SistemaGestao {
 //###############################  MENU ATIVOS ################################### 
 
     public static void cadastrarAtivo() {
+        // A View agora já entrega tudo validado
         String nome = ControleUsuario.lerNome();
         String ticker = ControleUsuario.lerTicker();
         double preco = ControleUsuario.lerPrecoAtual();
@@ -54,113 +56,17 @@ public class SistemaGestao {
     }
 
     public static void cadastrarAtivoLote(){
-    // ussar primeiro um caminho fixo para teste, depois pedir para o usuario inserir
-        String caminho = "resources/Arquivoscsv/ativos.csv"; 
-        List<Ativo> novos = CarregarCSV.carregarTodosAtivos(caminho);
-        
-        if (!novos.isEmpty()) {
-            bancoDeAtivos.addAll(novos);
-            ControleUsuario.exibirMensagemCarga(novos.size());
-        } else {
-            ControleUsuario.exibirErroCustomizado("Nao foi possivel carregar o lote de investidores.");
-        }
-        
+
     }
 
     public static void editaAtivo(){
-        System.out.println("Exibindo os ativos cadastrados..."); //do tipo x especifico do ativo que vc quer editar
-        int num = ControleUsuario.lerTipoAtivo() - 1;
-        exibirAtivos(num);
 
-        System.out.println("\nDigite o número correspondente ao ativo que deseja editar: ");
-        int index = ControleUsuario.lerOpcao() - 1;
-        
-        if (index < 0 || index >= bancoDeAtivos.size()) {
-            ControleUsuario.exibirErroCustomizado("Índice inválido.");
-            return;
-        }
-
-        Ativo ativo = bancoDeAtivos.get(index);
-
-        System.out.println("Digite a propriedade do ativo que deseja editar: ");
-        System.out.println("1. Nome");
-        System.out.println("2. Ticker");
-        System.out.println("3. Preço Atual");
-        System.out.println("4. Qualificado");
-
-        int propriedade = ControleUsuario.lerOpcao();
-        switch(propriedade){
-            case 1:
-                String novoNome = ControleUsuario.lerNome();
-                ativo.setNome(novoNome);
-            case 2:
-                String novoTicker = ControleUsuario.lerTicker();
-                ativo.setTicker(novoTicker); //nenhum desses tem verificação pois elas ja tao nos setters
-            case 3:
-                double novoPreco = ControleUsuario.lerPrecoAtual();
-                ativo.setPrecoAtual(novoPreco);
-            case 4:
-                boolean novoQualificado = ControleUsuario.lerQualificado();
-                ativo.setQualificado(novoQualificado);
-        }
     }
 
     public static void excluiAtivo(){
-    //(ao excluir um ativo isso deve ser propagado para as carteiras de investimento).
+
     }
 
-    /**
-     * Regra de Negócio: Verifica se o investidor logado tem permissão para o ativo.
-     */
-    public static boolean validarPermissaoInvestimento(Ativo ativo) {
-        if (investidorLogado instanceof Institucional) return true;
-        
-        PessoaFisica pf = (PessoaFisica) investidorLogado;
-        String perfil = pf.getPerfil();
-
-        if (ativo.isQualificado() && !pf.isQualificado()) {
-            ControleUsuario.exibirErroCustomizado("Ativo restrito a investidores qualificados.");
-            return false;
-        }
-
-        if (ativo instanceof Criptoativo && !perfil.equals("Arrojado")) {
-            ControleUsuario.exibirErroCustomizado("Apenas perfis Arrojados podem operar Criptoativos.");
-            return false;
-        }
-
-        if (ativo instanceof Stock && perfil.equals("Conservador")) {
-            ControleUsuario.exibirErroCustomizado("Perfis Conservadores não podem operar Stocks.");
-            return false;
-        }
-
-        return true;
-    }
-
-    public static void exibirAtivos(int num) {
-        // num vem do MenuAtivos: (opcao - 6)
-        // -1: Todos, 0: Ações, 1: FIIs, 2: Cripto, 3: Stocks, 4: Tesouro
-
-        if (num == -1) { // Caso "Todos os ativos" (Opção 5 do menu)
-            ControleUsuario.exibirTabelaAtivos(bancoDeAtivos);
-            return;
-        }
-
-        List<Ativo> filtrados = new ArrayList<>();
-        for (Ativo a : bancoDeAtivos) {
-            // Filtra usando 'instanceof' para saber a subclasse real do Ativo
-            if (num == 0 && a instanceof model.Acao) filtrados.add(a);
-            else if (num == 1 && a instanceof model.FII) filtrados.add(a);
-            else if (num == 2 && a instanceof model.Criptoativo) filtrados.add(a);
-            else if (num == 3 && a instanceof model.Stock) filtrados.add(a);
-            else if (num == 4 && a instanceof model.Tesouro) filtrados.add(a);
-        }
-
-        if (filtrados.isEmpty()) {
-            ControleUsuario.exibirErroCustomizado("Nenhum ativo encontrado para esta categoria.");
-        } else {
-            ControleUsuario.exibirTabelaAtivos(filtrados);
-        }
-    }
 
     
 
@@ -229,9 +135,8 @@ public class SistemaGestao {
             ControleUsuario.exibirErroCustomizado("Nao foi possivel carregar o lote de investidores.");
         }
     } 
-
     public static void excluirInvestidores(){
-        //tb tem q garantir que sua carteira de investimentos também seja apagada.
+
     }
 
     public static void listarInvestidores() {
@@ -255,64 +160,102 @@ public class SistemaGestao {
         Investidor encontrado = buscarInvestidor(doc); 
 
         if (encontrado != null) {
-            investidorLogado = encontrado; 
-            ControleUsuario.exibirMensagemCarga(1); 
+            investidorLogado = encontrado;
+            ControleUsuario.exibirMensagemCarga(1); // Sucesso
+            
+            // AQUI ESTÁ O ERRO: Você precisa chamar o menu novo!
             new view.Menus.MenuInvestidorSelected().executar(); 
-            investidorLogado = null; 
+            
+            investidorLogado = null; // Desloga ao sair
         } else {
             ControleUsuario.exibirErroCustomizado("Investidor não encontrado.");
         }
     }
 
+    /**
+     * Regra de Negócio: Verifica se o investidor logado tem permissão para o ativo.
+     */
+    public static boolean validarPermissaoInvestimento(Ativo ativo) {
+        if (investidorLogado instanceof Institucional) return true; // Institucional pode tudo [cite: 207]
+        
+        PessoaFisica pf = (PessoaFisica) investidorLogado;
+        String perfil = pf.getPerfil();
+
+        // 1. Trava de Qualificado (Patrimônio >= 1M)
+        if (ativo.isQualificado() && !pf.isQualificado()) {
+            ControleUsuario.exibirErroCustomizado("Ativo restrito a investidores qualificados.");
+            return false;
+        }
+
+        // 2. Trava de Criptoativos (Apenas Arrojados)
+        if (ativo instanceof Criptoativo && !perfil.equals("Arrojado")) {
+            ControleUsuario.exibirErroCustomizado("Apenas perfis Arrojados podem operar Criptoativos.");
+            return false;
+        }
+
+        // 3. Trava de Stocks (Moderado ou Arrojado)
+        if (ativo instanceof Stock && perfil.equals("Conservador")) {
+            ControleUsuario.exibirErroCustomizado("Perfis Conservadores não podem operar Stocks.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void exibirAtivos(int num) {
+        // num vem do MenuAtivos: (opcao - 6)
+        // -1: Todos, 0: Ações, 1: FIIs, 2: Cripto, 3: Stocks, 4: Tesouro
+
+        if (num == -1) { // Caso "Todos os ativos" (Opção 5 do menu)
+            ControleUsuario.exibirTabelaAtivos(bancoDeAtivos);
+            return;
+        }
+
+
+
+        List<Ativo> filtrados = new ArrayList<>();
+        for (Ativo a : bancoDeAtivos) {
+            // Filtra usando 'instanceof' para saber a subclasse real do Ativo
+            if (num == 0 && a instanceof model.Acao) filtrados.add(a);
+            else if (num == 1 && a instanceof model.FII) filtrados.add(a);
+            else if (num == 2 && a instanceof model.Criptoativo) filtrados.add(a);
+            else if (num == 3 && a instanceof model.Stock) filtrados.add(a);
+            else if (num == 4 && a instanceof model.Tesouro) filtrados.add(a);
+        }
+
+        if (filtrados.isEmpty()) {
+            ControleUsuario.exibirErroCustomizado("Nenhum ativo encontrado para esta categoria.");
+        } else {
+            ControleUsuario.exibirTabelaAtivos(filtrados);
+        }
+    }
 
 //###############################  MENU INVESTIDOR SELECIONADO ################################### 
-public static void salvarRelatorio() {
-    if (investidorLogado == null) {
-        ControleUsuario.exibirErroCustomizado("Nenhum investidor selecionado.");
-        return;
-    }
 
-    String nomeArquivo = "relatorio_" + investidorLogado.getDocumento() + ".json";
-    
-    try (java.io.PrintWriter out = new java.io.PrintWriter(new java.io.FileWriter(nomeArquivo))) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\n");
-        sb.append("  \"nome\": \"").append(investidorLogado.getNome()).append("\",\n");
-        sb.append("  \"documento\": \"").append(investidorLogado.getDocumento()).append("\",\n");
-        sb.append("  \"patrimonioTotal\": ").append(investidorLogado.getPatrimonioTotal()).append(",\n");
 
-        // Lógica de negócio no Controller
-        if (investidorLogado instanceof model.Investidores.PessoaFisica pf) {
-            sb.append("  \"tipo\": \"PF\",\n");
-            sb.append("  \"perfil\": \"").append(pf.getPerfil()).append("\",\n");
-        } else if (investidorLogado instanceof model.Investidores.Institucional pj) {
-            sb.append("  \"tipo\": \"PJ\",\n");
-            sb.append("  \"razaoSocial\": \"").append(pj.getRazaoSocial()).append("\",\n");
+       public static void salvarRelatorio() {
+        // 1. Verifica se tem alguém selecionado
+        if (investidorLogado == null) {
+            ControleUsuario.exibirErroCustomizado("Selecione um investidor primeiro!");
+            return;
         }
 
-        sb.append("  \"carteira\": [\n");
-        var itens = investidorLogado.getCarteira().getItens();
-        for (int i = 0; i < itens.size(); i++) {
-            var item = itens.get(i);
-            sb.append("    {\n");
-            sb.append("      \"ticker\": \"").append(item.getAtivo().getTicker()).append("\",\n");
-            sb.append("      \"quantidade\": ").append(item.getQuantidade()).append(",\n");
-            sb.append("      \"precoMedio\": ").append(item.getPrecoMedio()).append("\n");
-            sb.append("    }");
-            if (i < itens.size() - 1) sb.append(",");
-            sb.append("\n");
+        try {
+            // 2. AQUI chamamos o ExportadorRelatorio que você criou!
+            // Ele vai fazer todo o trabalho de criar o StringBuilder e o Arquivo
+            resources.ExportadorRelatorio.gerarArquivoJson(investidorLogado);
+
+            // 3. Pegamos o nome do arquivo para avisar o usuário
+            String nomeArquivo = "relatorio_" + investidorLogado.getDocumento() + ".json";
+            
+            // 4. Avisamos na tela (isso é o que faltava para você ver algo acontecer)
+            ControleUsuario.exibirSucessoExportacao(nomeArquivo);
+
+        } catch (java.io.IOException e) {
+            ControleUsuario.exibirErroCustomizado("Erro ao gravar no disco: " + e.getMessage());
         }
-        sb.append("  ]\n}");
         
-        out.print(sb.toString());
-        
-        // A View só entra aqui para dar o aviso final
-        ControleUsuario.exibirSucessoExportacao(nomeArquivo);
-        
-    } catch (java.io.IOException e) {
-        ControleUsuario.exibirErroCustomizado("Erro ao salvar arquivo: " + e.getMessage());
     }
-}
     public static void editarInfoInvestidor(){
         
     }

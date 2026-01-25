@@ -76,7 +76,7 @@ public class CarregarCSV {
                     System.err.println("Falha ao converter valores na linha: " + linha);
                 } 
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Erro ao ler fii.csv: " + e.getMessage());
         }
         return lista;
@@ -102,7 +102,7 @@ public class CarregarCSV {
 
                 lista.add(new Criptoativo(nome, ticker, preco, false, consenso, qtdMax, 5.39));
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Erro ao ler criptoativo.csv: " + e.getMessage());
         }
         return lista;
@@ -117,7 +117,7 @@ public class CarregarCSV {
                 // Ticker;Nome;Preço(USD);Bolsa;Setor
                 lista.add(new Stock(d[1], d[0], Double.parseDouble(d[2]), false, d[3], d[4], 5.39));
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Erro ao ler stock.csv: " + e.getMessage());
         }
         return lista;
@@ -132,7 +132,7 @@ public class CarregarCSV {
                 // Ticker;Nome;Preço;Rendimento;Vencimento
                 lista.add(new Tesouro(d[1], d[0], Double.parseDouble(d[2]), false, d[3], d[4]));
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Erro ao ler tesouro.csv: " + e.getMessage());
         }
         return lista;
@@ -156,7 +156,7 @@ public class CarregarCSV {
                     lista.add(new model.Investidores.Institucional(nome, doc, patri, extra));
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Erro ao ler investidores: " + e.getMessage());
         }
         return lista;

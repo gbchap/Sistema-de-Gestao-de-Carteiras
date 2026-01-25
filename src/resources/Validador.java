@@ -36,13 +36,12 @@ public class Validador {
 
     public static int validarDocumento(String doc) {
         if (doc == null || doc.trim().isEmpty()) return -1;
-        // O Regex aceita: números, pontos, hífens e barras (pq são usados em CPF/CNPJ)
         if (!doc.matches("[0-9.\\-/]+")) {
             return -5; 
         }
         String limpo = limparDocumento(doc);
         if (limpo.matches("(\\d)\\1{10,13}")) {
-                return -7; // Código para "Documento com dígitos repetidos/falso"
+                return -7; // para "Documento com dígitos repetidos/falso"
             }
         if (limpo.length() < 11) return -2;
         if (limpo.length() > 11 && limpo.length() < 14) return -3;
