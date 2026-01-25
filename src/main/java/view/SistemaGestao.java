@@ -389,9 +389,10 @@ public class SistemaGestao {
         public static void adicionarMovVenda() {
             String ticker = ControleUsuario.lerTicker();
             double qtd = ControleUsuario.lerQuantidade();
+            String instituicao = ControleUsuario.lerInstituicao();
 
-            boolean sucesso = investidorLogado.venderAtivo(ticker, qtd);
-            
+            boolean sucesso = investidorLogado.venderAtivo(ticker, qtd, instituicao);
+
             if (sucesso) {
                 ControleUsuario.exibirSucesso("Venda realizada!");
             } else {
@@ -401,47 +402,44 @@ public class SistemaGestao {
         
 
     public static void adicionarLoteMov() {
-        // 1. Interação com o usuário delegada para a View
         String caminho = ControleUsuario.lerCaminhoArquivo();
 
-        // 2. Uso de Try-with-resources para garantir o fechamento do arquivo
         try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(caminho))) {
-            String linha = br.readLine(); // Pular cabeçalho
+            String linha = br.readLine(); 
             int processados = 0;
             
             while ((linha = br.readLine()) != null) {
-                String[] d = linha.split(";"); // Formato esperado: Ticker;Tipo;Quantidade;Preco
+                String[] d = linha.split(";");
                 
-                // Validação simples de colunas para evitar IndexOutOfBounds
-                if (d.length < 4) continue;
+                // Agora esperamos 5 colunas: Ticker;Tipo;Qtd;Preco;Instituicao
+                if (d.length < 5) continue; 
 
                 Ativo a = buscarAtivoPorTicker(d[0]);
                 
-                // Verifica se o ativo existe e se o investidor tem permissão (Perfil)
                 if (a != null && validarPermissaoInvestimento(a)) {
                     try {
                         double qtd = Double.parseDouble(d[2].replace(",", "."));
                         double preco = Double.parseDouble(d[3].replace(",", "."));
+                        String instituicao = d[4]; // <--- Ler do CSV
                         
                         if (d[1].equalsIgnoreCase("Compra")) {
-                            investidorLogado.comprarAtivo(a, qtd, preco);
+                            investidorLogado.comprarAtivo(a, qtd, preco, instituicao);
                             processados++;
                         } else if (d[1].equalsIgnoreCase("Venda")) {
-                            boolean sucesso = investidorLogado.venderAtivo(d[0], qtd);
+                            boolean sucesso = investidorLogado.venderAtivo(d[0], qtd, instituicao);
                             if (sucesso) processados++;
                         }
                     } catch (NumberFormatException e) {
-                        // Pula linhas com valores numéricos inválidos sem travar o sistema
+                       // Ignora linhas inválidas
                     }
                 }
             }
-            // 3. Feedback de sucesso via View
             ControleUsuario.exibirMensagemCarga(processados);
 
         } catch (java.io.FileNotFoundException e) {
-            ControleUsuario.exibirErroCustomizado("Arquivo não encontrado no caminho: " + caminho);
+            ControleUsuario.exibirErroCustomizado("Arquivo não encontrado: " + caminho);
         } catch (java.io.IOException e) {
-            ControleUsuario.exibirErroCustomizado("Erro ao ler o arquivo: " + e.getMessage());
+            ControleUsuario.exibirErroCustomizado("Erro de leitura: " + e.getMessage());
         }
     }
 
@@ -450,6 +448,7 @@ public class SistemaGestao {
     public static void adicionarMovCompra() {
         String ticker = ControleUsuario.lerTicker();
         Ativo ativo = buscarAtivoPorTicker(ticker);
+        String instituicao = ControleUsuario.lerInstituicao();
 
         if (ativo == null) {
             ControleUsuario.exibirErroCustomizado("Ativo não encontrado no sistema.");
@@ -461,7 +460,7 @@ public class SistemaGestao {
         double qtd = ControleUsuario.lerQuantidade();
         double preco = ativo.getPrecoAtual(); 
 
-        investidorLogado.comprarAtivo(ativo, qtd, preco);
+        investidorLogado.comprarAtivo(ativo, qtd, preco, instituicao);
         ControleUsuario.exibirSucesso("Compra realizada com sucesso!");
     }
 

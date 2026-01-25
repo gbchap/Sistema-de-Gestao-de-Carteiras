@@ -318,7 +318,11 @@ public class ControleUsuario {
     }
 
     public static String lerCaminhoArquivo() {
-        System.out.print("Digite o caminho do arquivo de movimentações (ex: resources/Arquivoscsv/movs.csv): ");
+        System.out.print("Digite o caminho do arquivo de movimentações (ex: Arquivoscsv/movs.csv): ");
         return scanner.nextLine();
+    }
+
+    public static String lerInstituicao() {
+        return lerTextoValidado("Digite o nome da instituição (ex: NuInvest, XP, Binance): ");
     }
 }

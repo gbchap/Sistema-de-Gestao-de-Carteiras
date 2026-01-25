@@ -65,7 +65,7 @@ public Investidor(String nome, String documento, String telefone, String dataNas
     public boolean isQualificado() {
         return this.patrimonioTotal >= 1000000.0;
     }
-public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao) {
+public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao, String instituicao) {
     ItemCarteira itemExistente = null;
     for (ItemCarteira item : carteira.getItens()) {
         if (item.getAtivo().getTicker().equalsIgnoreCase(ativo.getTicker())) {
@@ -88,13 +88,13 @@ public void comprarAtivo(Ativo ativo, double quantidade, double precoExecucao) {
     }
     
     // Registra no histórico
-    this.historico.add(new Movimentacao("C"+System.currentTimeMillis(), ativo, quantidade, precoExecucao, "Compra"));
+    this.historico.add(new Movimentacao("C"+System.currentTimeMillis(), ativo, quantidade, precoExecucao, "Compra", instituicao));
 }
 
-public boolean venderAtivo(String ticker, double quantidade) {
+public boolean venderAtivo(String ticker, double quantidade, String instituicao) {
     for (ItemCarteira item : carteira.getItens()) {
         if (item.getAtivo().getTicker().equalsIgnoreCase(ticker)) {
-            // TRAVA DE SEGURANÇA: Não vende o que não tem
+            // TRAVA DE SEGURANÇA: Não vende o que não temx'
             if (item.getQuantidade() >= quantidade) {
                 item.setQuantidade(item.getQuantidade() - quantidade);
                 
@@ -104,7 +104,7 @@ public boolean venderAtivo(String ticker, double quantidade) {
                 }
                 
                 this.historico.add(new Movimentacao("V"+System.currentTimeMillis(), 
-                        item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda"));
+                        item.getAtivo(), quantidade, item.getAtivo().getPrecoAtual(), "Venda", instituicao));
                 return true;
             }
         }
