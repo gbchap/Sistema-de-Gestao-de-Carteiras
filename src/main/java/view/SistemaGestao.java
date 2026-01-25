@@ -96,7 +96,7 @@ public class SistemaGestao {
 
     public static void cadastrarAtivoLote(){
         java.util.Scanner sc = new java.util.Scanner(System.in);
-        System.out.print("Digite o caminho do arquivo (ex: resources/Arquivoscsv/ativos.csv): ");
+        System.out.print("Digite o caminho do arquivo (ex: Arquivoscsv/ativos.csv): ");
         String caminho = sc.nextLine();
 
         int tipo = ControleUsuario.lerTipoAtivo();
@@ -481,23 +481,22 @@ public class SistemaGestao {
         ControleUsuario.exibirMensagemCarga(removidos);
     }
 
-    // Cadastro em Lote com verificação de duplicidade
+  
     public static void cadastrarInvestidorLote() {
-        System.out.print("Digite o caminho do arquivo (ex: resources/Arquivoscsv/investidores.csv): ");
-        String caminho;
-        try (java.util.Scanner scanner = new java.util.Scanner(System.in)) {
-            caminho = scanner.nextLine();
-        }
+    System.out.print("Digite o caminho do arquivo (ex: Arquivoscsv/investidores.csv): ");
     
-        List<Investidor> novos = CarregarCSV.lerInvestidores(caminho);
-        int adicionados = 0;
+    java.util.Scanner scannerManual = new java.util.Scanner(System.in);
+    String caminho = scannerManual.nextLine();
 
-        for (Investidor novo : novos) {
-            if (buscarInvestidor(novo.getDocumento()) == null) {
-                listaInvestidores.add(novo);
-                adicionados++;
-            }
+    List<Investidor> novos = resources.CarregarCSV.lerInvestidores(caminho);
+    int adicionados = 0;
+
+    for (Investidor novo : novos) {
+        if (buscarInvestidor(novo.getDocumento()) == null) {
+            listaInvestidores.add(novo);
+            adicionados++;
         }
-        ControleUsuario.exibirMensagemCarga(adicionados);
     }
+    view.ControleUsuario.exibirMensagemCarga(adicionados);
+}
 }
