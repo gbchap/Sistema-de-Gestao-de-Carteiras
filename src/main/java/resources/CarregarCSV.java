@@ -17,7 +17,7 @@ import model.Investidores.Investidor;
 public class CarregarCSV {
 
     // Ajusta este caminho conforme a estrutura do nosso VS Code
-    private static final String BASE_PATH = "resources/Arquivoscsv/";
+    private static final String BASE_PATH = "Arquivoscsv/";
     /**
      * Método mestre que centraliza a carga de todos os ficheiros.
      * É este método que o SistemaGestao chama no início.
@@ -38,7 +38,7 @@ public class CarregarCSV {
     public static List<Acao> lerAcoes(String caminho) {
         List<Acao> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
-            String linha = br.readLine(); // Pular cabeçalho
+            String linha = br.readLine(); // Pular cabeçalhol
             while ((linha = br.readLine()) != null) {
                 String[] dados = linha.split(";");
                 // Ticker;Nome;Preço;Qualificado
